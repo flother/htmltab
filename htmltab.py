@@ -16,14 +16,15 @@ DEFAULT_NULL_VALUES = ("na", "n/a", ".", "-")
 
 @click.command()
 @click.option("--css", "language", flag_value="css", default=True,
-              help="Denotes that the expression is a CSS selector (default).")
+              help="Use a CSS selector to determine the table (default).")
 @click.option("--xpath", "language", flag_value="xpath",
-              help="Denotes that the expression is an XPath expression.")
+              help="Use an XPath expression to determine the table.")
 @click.option("--index", "language", flag_value="index",
-              help="Denotes that the expression is an index, starting from 1.")
+              help="Use an index, starting from 1, to determine the table.")
 @click.option("--null-value", "-n", multiple=True,
-              help="Case-insensitive value to consider null (defaults are "
-                   "{})".format(", ".join(DEFAULT_NULL_VALUES)))
+              help="Case-insensitive value to convert to an empty cell in the "
+                   "CSV output (defaults are '{}')".format(
+                       "', '".join(DEFAULT_NULL_VALUES)))
 @click.argument("expression")
 @click.argument("html_file", type=click.File("rb"))
 def main(language, null_value, expression, html_file):

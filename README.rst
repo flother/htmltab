@@ -49,16 +49,15 @@ Usage
 
     Usage: htmltab [OPTIONS] EXPRESSION HTML_FILE
 
-      Select a table within an HTML document and convert it to CSV
+      Select a table within an HTML document and convert it to CSV.
 
     Options:
-      --css                  Denotes that the expression is a CSS selector
-                             (default).
-      --xpath                Denotes that the expression is an XPath expression.
-      --index                Denotes that the expression is an index, starting
-                             from 1.
-      -n, --null-value TEXT  Case-insensitive value to consider null (defaults are
-                             na, n/a, ., -)
+      --css                  Use a CSS selector to determine the table (default).
+      --xpath                Use an XPath expression to determine the table.
+      --index                Use an index, starting from 1, to determine the
+                             table.
+      -n, --null-value TEXT  Case-insensitive value to convert to an empty cell in
+                             the CSV output (defaults are 'na', 'n/a', '.', '-')
       --help                 Show this message and exit.
 
 
