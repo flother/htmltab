@@ -33,6 +33,16 @@ def main(language, null_value, expression, html_file):
     """
     Select a table within an HTML document and convert it to CSV.
     """
+    # Ensure ``SIGPIPE`` doesn't throw an exception. This prevents the
+    # ``[Errno 32] Broken pipe`` error you see when, e.g., piping to ``head``.
+    # For details see http://bugs.python.org/issue1652.
+    try:
+        import signal
+        signal.signal(signal.SIGPIPE, signal.SIG_DFL)
+    except (ImportError, AttributeError):
+        # Do nothing on platforms without signals or ``SIGPIPE``.
+        pass
+
     # Read the HTML file using lxml's HTML parser, but convert to Unicode using
     # Beautiful Soup's UnicodeDammit class.
     try:
