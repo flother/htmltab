@@ -81,12 +81,26 @@ def main(language, null_value, expression, html_file):
 
     # Output to stdout.
     rows = csv.writer(sys.stdout)
-    for row in table.xpath(".//tr"):
-        rows.writerow([cell.text
-                       if cell.text and cell.text.lower() not in null_value
-                       else None
-                       for cell in row.xpath("./th|./td")
-                       ])
+    # The convoluted XPath expression below is to stop nested tables being
+    # flattened out in the output. We only want the table rows that are direct
+    # children of the selected table to be output as rows. Any tables within
+    # the selected table should be output as text within a row cell, not added
+    # as distinct, top-level rows.
+    for tr in table.xpath("./tr|./thead/tr|./tbody/tr|./tfoot/tr"):
+        row = []
+        # Loop through all th and td elements and output them as cells. Since
+        # CSV doesn't have any concept of headers or data cells we don't need
+        # to treat them differently.
+        for cell in tr.xpath("./th|./td"):
+            # Strip whitespace, convert null values to None, and append all the
+            # text within the cell element and its children to the row,
+            text = cell.text_content().strip()
+            if text.lower() in null_value:
+                text = None
+            row.append(text)
+        if any(row):
+            # Only output a row if it has at least one non-empty cell.
+            rows.writerow(row)
 
 
 if __name__ == "__main__":
