@@ -21,6 +21,7 @@ setup(name="htmltab",
           "console_scripts": ["htmltab=htmltab:main"],
       },
       install_requires=[
+          "beautifulsoup4==4.4.1",
           "click==6.6",
           "lxml==3.6.0",
       ])
