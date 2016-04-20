@@ -52,9 +52,9 @@ Usage
       Select a table within an HTML document and convert it to CSV.
 
     Options:
-      --css                  Use a CSS selector to determine the table (default).
-      --xpath                Use an XPath expression to determine the table.
-      --index                Use an index, starting from 1, to determine the
+      -c, --css              Use a CSS selector to determine the table (default).
+      -x, --xpath            Use an XPath expression to determine the table.
+      -i, --index            Use an index, starting from 1, to determine the
                              table.
       -n, --null-value TEXT  Case-insensitive value to convert to an empty cell in
                              the CSV output (defaults are 'na', 'n/a', '.', '-')
