@@ -94,7 +94,7 @@ def main(language, null_value, expression, html_file):
         for cell in tr.xpath("./th|./td"):
             # Strip whitespace, convert null values to None, and append all the
             # text within the cell element and its children to the row,
-            text = cell.text_content().strip()
+            text = " ".join(cell.text_content().split())
             if text.lower() in null_value:
                 text = None
             row.append(text)
