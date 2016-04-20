@@ -6,8 +6,10 @@ output the CSV to ``stdout``.
 import csv
 import sys
 
+from bs4 import UnicodeDammit
 import click
-import lxml.etree
+from lxml.etree import LxmlError
+import lxml.html
 from lxml.cssselect import SelectorError
 
 
@@ -31,10 +33,16 @@ def main(language, null_value, expression, html_file):
     """
     Select a table within an HTML document and convert it to CSV.
     """
-    # Read the HTML file using lxml's default parser.
+    # Read the HTML file using lxml's HTML parser, but convert to Unicode using
+    # Beautiful Soup's UnicodeDammit class.
     try:
-        doc = lxml.etree.HTML(html_file.read())
-    except lxml.etree.LxmlError:
+        unicode_html = UnicodeDammit(html_file.read())
+        if unicode_html.unicode_markup is None:
+            raise click.UsageError("no HTML provided.")
+        if not unicode_html.unicode_markup:
+            raise click.UsageError("could not detect character encoding.")
+        doc = lxml.html.fromstring(unicode_html.unicode_markup)
+    except (LxmlError, TypeError):
         raise click.UsageError("could not parse HTML.")
 
     # Find the element(s) that match the CSS selector, XPath expression, or
