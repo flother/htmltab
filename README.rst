@@ -38,7 +38,7 @@ Installation
 
 ::
 
-    pip install -e git+https://github.com/flother/htmltab#egg=htmltab
+    pip3 install -e git+https://github.com/flother/htmltab#egg=htmltab
 
 HTMLTab requires `Python 3`_, `Click`_, and `lxml`_.
 
