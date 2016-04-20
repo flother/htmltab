@@ -25,7 +25,7 @@ DEFAULT_NULL_VALUES = ("na", "n/a", ".", "-")
               help="Case-insensitive value to consider null (defaults are "
                    "{})".format(", ".join(DEFAULT_NULL_VALUES)))
 @click.argument("expression")
-@click.argument("html_file", type=click.File("rt"))
+@click.argument("html_file", type=click.File("rb"))
 def main(language, null_value, expression, html_file):
     """
     Select a table within an HTML document and convert it to CSV.
