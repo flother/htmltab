@@ -4,6 +4,7 @@ Command-line utility to parse an HTML document, find a particular
 output the CSV to ``stdout``.
 """
 import csv
+from decimal import Decimal, InvalidOperation
 import sys
 
 from bs4 import UnicodeDammit
@@ -14,6 +15,48 @@ from lxml.cssselect import SelectorError
 
 
 DEFAULT_NULL_VALUES = ("na", "n/a", ".", "-")
+DEFAULT_CURRENCY_SYMBOLS = ("$", "¥", "£", "€")
+
+
+def numberise(value, group_symbol, decimal_symbol, currency_symbols):
+    """
+    Convert a string to a :class:`decimal.Decimal` object, if the string
+    is number-like.
+
+    A string's considered number-like if it's made up of numbers with
+    or without group and decimal symbols, and optionally suffixed by
+    percent signs, prefixed by a +/- sign, or surrounded by currency
+    symbols. It's pretty lenient, and could easily parse something as a
+    number when it's not, but it's good enough.
+
+    Args:
+        value: String to attempt to convert to a number
+        group_symbol: symbol used to group digits in numbers (e.g. the
+            ',' in '1,000.00')
+        decimal_symbol: Symbol used to separate integer from fraction in
+            numbers (e.g. the '.' in '1,000.00').
+        currency_symbols: List of currency symbols.
+
+    Returns:
+        :class:`decimal.Decimal`
+
+    Raises:
+        :class:`ValueError`: ``value`` is not numeric
+    """
+    number = value.strip("%")
+    if len(number) > 0 and number[0] == "-":
+        number = number[1:]
+        sign = Decimal("-1")
+    else:
+        sign = Decimal("1")
+    for symbol in currency_symbols:
+        number = number.strip(symbol)
+    number = number.replace(group_symbol, "")
+    number = number.replace(decimal_symbol, ".")
+    try:
+        return Decimal(number) * sign
+    except InvalidOperation:
+        raise ValueError("{} is not numeric".format(value))
 
 
 @click.command()
@@ -27,9 +70,25 @@ DEFAULT_NULL_VALUES = ("na", "n/a", ".", "-")
               help="Case-insensitive value to convert to an empty cell in the "
                    "CSV output (defaults are '{}')".format(
                        "', '".join(DEFAULT_NULL_VALUES)))
+@click.option("--convert-numbers/--keep-numbers", "-c/-k", is_flag=True,
+              default=True, help="Convert number-like strings into numbers "
+                                 "(e.g. remove group symbols, percent signs) "
+                                 "or leave unchanged.  [default: convert]")
+@click.option("--group-symbol", "-g", default=",", show_default=True,
+              help="Symbol used to group digits in numbers (e.g. the ',' in "
+                   "'1,000.00').")
+@click.option("--decimal-symbol", "-d", default=".", show_default=True,
+              help="Symbol used to separate integer from fraction in numbers "
+                   "(e.g. the '.' in '1,000.00').")
+@click.option("--currency-symbol", "-u", multiple=True,
+              help="Currency symbol to remove when converting number-like "
+                   "strings. Use multiple times if you have more than one "
+                   "currency symbol  [default: '{}')".format("', '".join(
+                       DEFAULT_CURRENCY_SYMBOLS)))
 @click.argument("expression")
 @click.argument("html_file", type=click.File("rb"))
-def main(language, null_value, expression, html_file):
+def main(language, null_value, convert_numbers, group_symbol, decimal_symbol,
+         currency_symbol, expression, html_file):
     """
     Select a table within an HTML document and convert it to CSV.
     """
@@ -97,6 +156,12 @@ def main(language, null_value, expression, html_file):
             text = " ".join(cell.text_content().split())
             if text.lower() in null_value:
                 text = None
+            elif convert_numbers:
+                try:
+                    text = numberise(text, group_symbol, decimal_symbol,
+                                     currency_symbol)
+                except ValueError:
+                    pass  # String not numeric, leave as-is.
             row.append(text)
         if any(row):
             # Only output a row if it has at least one non-empty cell.
