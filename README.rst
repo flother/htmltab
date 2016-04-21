@@ -60,7 +60,7 @@ Usage
       -n, --null-value TEXT           Case-insensitive value to convert to an
                                       empty cell in the CSV output. Use multiple
                                       times if you have more than one null value.
-                                      [default: 'na', 'n/a', '.', '-')
+                                      [default: 'na', 'n/a', '.', '-']
       -c, --convert-numbers / -k, --keep-numbers
                                       Convert number-like strings into numbers
                                       (e.g. remove group symbols, percent signs)
@@ -73,7 +73,7 @@ Usage
       -u, --currency-symbol TEXT      Currency symbol to remove when converting
                                       number-like strings. Use multiple times if
                                       you have more than one currency symbol
-                                      [default: '$', '¥', '£', '€')
+                                      [default: '$', '¥', '£', '€']
       --help                          Show this message and exit.
 
 

@@ -69,7 +69,7 @@ def numberise(value, group_symbol, decimal_symbol, currency_symbols):
 @click.option("--null-value", "-n", multiple=True,
               help="Case-insensitive value to convert to an empty cell in the "
                    "CSV output. Use multiple times if you have more than one "
-                   "null value.  [default: '{}')".format("', '".join(
+                   "null value.  [default: '{}']".format("', '".join(
                        DEFAULT_NULL_VALUES)))
 @click.option("--convert-numbers/--keep-numbers", "-c/-k", is_flag=True,
               default=True, help="Convert number-like strings into numbers "
@@ -84,7 +84,7 @@ def numberise(value, group_symbol, decimal_symbol, currency_symbols):
 @click.option("--currency-symbol", "-u", multiple=True,
               help="Currency symbol to remove when converting number-like "
                    "strings. Use multiple times if you have more than one "
-                   "currency symbol  [default: '{}')".format("', '".join(
+                   "currency symbol  [default: '{}']".format("', '".join(
                        DEFAULT_CURRENCY_SYMBOLS)))
 @click.argument("expression")
 @click.argument("html_file", type=click.File("rb"))
