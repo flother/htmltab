@@ -18,11 +18,11 @@ DEFAULT_NULL_VALUES = ("na", "n/a", ".", "-")
 
 @click.command()
 @click.option("--css", "-s", "language", flag_value="css", default=True,
-              help="Use a CSS selector to determine the table (default).")
+              help="Interpret EXPRESSION as a CSS selector (default).")
 @click.option("--xpath", "-x", "language", flag_value="xpath",
-              help="Use an XPath expression to determine the table.")
+              help="Interpret EXPRESSION as an XPath expression.")
 @click.option("--index", "-i", "language", flag_value="index",
-              help="Use an index, starting from 1, to determine the table.")
+              help="Interpret EXPRESSION as an index, starting from 1.")
 @click.option("--null-value", "-n", multiple=True,
               help="Case-insensitive value to convert to an empty cell in the "
                    "CSV output (defaults are '{}')".format(
