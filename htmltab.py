@@ -68,8 +68,9 @@ def numberise(value, group_symbol, decimal_symbol, currency_symbols):
               help="Interpret EXPRESSION as an index, starting from 1.")
 @click.option("--null-value", "-n", multiple=True,
               help="Case-insensitive value to convert to an empty cell in the "
-                   "CSV output (defaults are '{}')".format(
-                       "', '".join(DEFAULT_NULL_VALUES)))
+                   "CSV output. Use multiple times if you have more than one "
+                   "null value.  [default: '{}')".format("', '".join(
+                       DEFAULT_NULL_VALUES)))
 @click.option("--convert-numbers/--keep-numbers", "-c/-k", is_flag=True,
               default=True, help="Convert number-like strings into numbers "
                                  "(e.g. remove group symbols, percent signs) "
