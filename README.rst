@@ -52,13 +52,29 @@ Usage
       Select a table within an HTML document and convert it to CSV.
 
     Options:
-      -c, --css              Use a CSS selector to determine the table (default).
-      -x, --xpath            Use an XPath expression to determine the table.
-      -i, --index            Use an index, starting from 1, to determine the
-                             table.
-      -n, --null-value TEXT  Case-insensitive value to convert to an empty cell in
-                             the CSV output (defaults are 'na', 'n/a', '.', '-')
-      --help                 Show this message and exit.
+      -s, --css                       Interpret EXPRESSION as a CSS selector
+                                      (default).
+      -x, --xpath                     Interpret EXPRESSION as an XPath expression.
+      -i, --index                     Interpret EXPRESSION as an index, starting
+                                      from 1.
+      -n, --null-value TEXT           Case-insensitive value to convert to an
+                                      empty cell in the CSV output. Use multiple
+                                      times if you have more than one null value.
+                                      [default: 'na', 'n/a', '.', '-')
+      -c, --convert-numbers / -k, --keep-numbers
+                                      Convert number-like strings into numbers
+                                      (e.g. remove group symbols, percent signs)
+                                      or leave unchanged.  [default: convert]
+      -g, --group-symbol TEXT         Symbol used to group digits in numbers (e.g.
+                                      the ',' in '1,000.00').  [default: ,]
+      -d, --decimal-symbol TEXT       Symbol used to separate integer from
+                                      fraction in numbers (e.g. the '.' in
+                                      '1,000.00').  [default: .]
+      -u, --currency-symbol TEXT      Currency symbol to remove when converting
+                                      number-like strings. Use multiple times if
+                                      you have more than one currency symbol
+                                      [default: '$', '¥', '£', '€')
+      --help                          Show this message and exit.
 
 
 .. _Python 3: https://docs.python.org/3/
