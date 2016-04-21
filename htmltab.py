@@ -17,7 +17,7 @@ DEFAULT_NULL_VALUES = ("na", "n/a", ".", "-")
 
 
 @click.command()
-@click.option("--css", "-c", "language", flag_value="css", default=True,
+@click.option("--css", "-s", "language", flag_value="css", default=True,
               help="Use a CSS selector to determine the table (default).")
 @click.option("--xpath", "-x", "language", flag_value="xpath",
               help="Use an XPath expression to determine the table.")
