@@ -106,7 +106,8 @@ def main(language, null_value, convert_numbers, group_symbol, decimal_symbol,
     # Read the HTML file using lxml's HTML parser, but convert to Unicode using
     # Beautiful Soup's UnicodeDammit class.
     try:
-        unicode_html = UnicodeDammit(html_file.read())
+        unicode_html = UnicodeDammit(html_file.read(), smart_quotes_to="html",
+                                     is_html=True)
         if unicode_html.unicode_markup is None:
             raise click.UsageError("no HTML provided.")
         if not unicode_html.unicode_markup:
