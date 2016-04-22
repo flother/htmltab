@@ -7,6 +7,7 @@ setup(name="htmltab",
                   "CSV data",
       long_description=open("README.rst").read(),
       url="https://github.com/flother/htmltab",
+      license="MIT",
       classifiers=[
           "Development Status :: 4 - Beta",
           "Environment :: Console",
