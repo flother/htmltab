@@ -25,4 +25,5 @@ setup(name="htmltab",
           "beautifulsoup4>=4.3.2",
           "click>=6.0",
           "lxml>=3.2.0",
+          "cssselect>=0.9.1",
       ])
