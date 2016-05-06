@@ -159,6 +159,7 @@ def main(language, null_value, convert_numbers, group_symbol, decimal_symbol,
             if text.lower() in null_value:
                 text = None
             elif convert_numbers:
+                currency_symbol = currency_symbol or DEFAULT_CURRENCY_SYMBOLS
                 try:
                     text = numberise(text, group_symbol, decimal_symbol,
                                      currency_symbol)
