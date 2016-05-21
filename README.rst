@@ -52,7 +52,7 @@ Installation
 
     pip3 install -e git+https://github.com/flother/htmltab#egg=htmltab
 
-HTMLTab requires `Python 3`_, `Click`_, `lxml`_, cssselect_, and `Beautiful Soup 4`_.
+HTMLTab requires `Python 3`_, `Click`_, `lxml`_, cssselect_, `Requests`_ and `Beautiful Soup 4`_.
 
 Usage
 -----
