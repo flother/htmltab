@@ -2,7 +2,7 @@ Command-line utility to select a table within an HTML document and convert it
 to CSV. Here we can get the historical population of Reykjavík from Wikipedia::
 
     $ curl -s https://en.wikipedia.org/wiki/Reykjav%C3%ADk | \
-    > htmltab -n '-' -n '--' h2+p+table.wikitable - | \
+    > htmltab -n '-' -n '--' -f - h2+p+table.wikitable | \
     > csvlook
     |-------+--------+---------|
     |  Year | City   | Metro   |
@@ -30,6 +30,18 @@ to CSV. Here we can get the historical population of Reykjavík from Wikipedia::
     |  2015 | 121822 |         |
     |-------+--------+---------|
 
+Or straight from the url with the -u flag::
+
+    $ htmltab -n '-' -n '--' \
+    > -u https://en.wikipedia.org/wiki/Reykjav%C3%ADk \
+    > h2+p+table.wikitable
+
+Or by index::
+
+    $ htmltab -n '-' -n '--' \
+    > -u https://en.wikipedia.org/wiki/Reykjav%C3%ADk \
+    > -i 5
+
 * Repository: https://github.com/flother/htmltab
 * Issues: https://github.com/flother/htmltab/issues
 
@@ -47,12 +59,12 @@ Usage
 
 .. code-block:: text
 
-    Usage: htmltab [OPTIONS] EXPRESSION HTML_FILE
+    Usage: htmltab.py [OPTIONS] EXPRESSION
 
       Select a table within an HTML document and convert it to CSV.
 
     Options:
-      -s, --css                       Interpret EXPRESSION as a CSS selector
+      -e, --css                       Interpret EXPRESSION as a CSS selector
                                       (default).
       -x, --xpath                     Interpret EXPRESSION as an XPath expression.
       -i, --index                     Interpret EXPRESSION as an index, starting
@@ -70,10 +82,12 @@ Usage
       -d, --decimal-symbol TEXT       Symbol used to separate integer from
                                       fraction in numbers (e.g. the '.' in
                                       '1,000.00').  [default: .]
-      -u, --currency-symbol TEXT      Currency symbol to remove when converting
+      -s, --currency-symbol TEXT      Currency symbol to remove when converting
                                       number-like strings. Use multiple times if
                                       you have more than one currency symbol
                                       [default: '$', '¥', '£', '€']
+      -u, --url TEXT                  Fetch HTML document from url.
+      -f, --file FILENAME             Read HTML document from file or stdin
       --help                          Show this message and exit.
 
 
@@ -82,3 +96,4 @@ Usage
 .. _lxml: http://lxml.de
 .. _cssselect: https://pythonhosted.org/cssselect/
 .. _Beautiful Soup 4: https://www.crummy.com/software/BeautifulSoup/
+.. _Requests: http://docs.python-requests.org/en/master/

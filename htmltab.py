@@ -60,7 +60,7 @@ def numberise(value, group_symbol, decimal_symbol, currency_symbols):
 
 
 @click.command()
-@click.option("--css", "-s", "language", flag_value="css", default=True,
+@click.option("--css", "-e", "language", flag_value="css", default=True,
               help="Interpret EXPRESSION as a CSS selector (default).")
 @click.option("--xpath", "-x", "language", flag_value="xpath",
               help="Interpret EXPRESSION as an XPath expression.")
@@ -81,15 +81,18 @@ def numberise(value, group_symbol, decimal_symbol, currency_symbols):
 @click.option("--decimal-symbol", "-d", default=".", show_default=True,
               help="Symbol used to separate integer from fraction in numbers "
                    "(e.g. the '.' in '1,000.00').")
-@click.option("--currency-symbol", "-u", multiple=True,
+@click.option("--currency-symbol", "-s", multiple=True,
               help="Currency symbol to remove when converting number-like "
                    "strings. Use multiple times if you have more than one "
                    "currency symbol  [default: '{}']".format("', '".join(
                        DEFAULT_CURRENCY_SYMBOLS)))
+@click.option("--url", "-u", help="Fetch HTML document from url"
+              "from url.")
+@click.option("--file", "-f", type=click.File("rb"), help="Read HTML document "
+              "from file or stdin")
 @click.argument("expression")
-@click.argument("html_file", type=click.File("rb"))
 def main(language, null_value, convert_numbers, group_symbol, decimal_symbol,
-         currency_symbol, expression, html_file):
+         currency_symbol, expression, url, file):
     """
     Select a table within an HTML document and convert it to CSV.
     """
@@ -102,7 +105,17 @@ def main(language, null_value, convert_numbers, group_symbol, decimal_symbol,
     except (ImportError, AttributeError):
         # Do nothing on platforms without signals or ``SIGPIPE``.
         pass
-
+    html_file = None
+    if url is not None:
+        import requests
+        from io import StringIO
+        r = requests.get(url)
+        html_file = StringIO(r.text)
+    elif file is not None:
+        html_file = file
+    if not html_file:
+        raise click.UsageError("No HTML document supplied. Use either the "
+                               "-u or -f option")
     # Read the HTML file using lxml's HTML parser, but convert to Unicode using
     # Beautiful Soup's UnicodeDammit class.
     try:
