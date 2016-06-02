@@ -60,12 +60,12 @@ def numberise(value, group_symbol, decimal_symbol, currency_symbols):
 
 
 @click.command()
-@click.option("--css", "-s", "language", flag_value="css", default=True,
-              help="Interpret EXPRESSION as a CSS selector (default).")
+@click.option("--index", "-i", "language", flag_value="index", default=True,
+              help="Interpret EXPRESSION as an index, starting from 1.")
+@click.option("--css", "-s", "language", flag_value="css",
+              help="Interpret EXPRESSION as a CSS selector.")
 @click.option("--xpath", "-x", "language", flag_value="xpath",
               help="Interpret EXPRESSION as an XPath expression.")
-@click.option("--index", "-i", "language", flag_value="index",
-              help="Interpret EXPRESSION as an index, starting from 1.")
 @click.option("--null-value", "-n", multiple=True,
               help="Case-insensitive value to convert to an empty cell in the "
                    "CSV output. Use multiple times if you have more than one "
@@ -86,7 +86,7 @@ def numberise(value, group_symbol, decimal_symbol, currency_symbols):
                    "strings. Use multiple times if you have more than one "
                    "currency symbol  [default: '{}']".format("', '".join(
                        DEFAULT_CURRENCY_SYMBOLS)))
-@click.argument("expression")
+@click.argument("expression", default="1")
 @click.argument("html_file", type=click.File("rb"), default="-")
 def main(language, null_value, convert_numbers, group_symbol, decimal_symbol,
          currency_symbol, expression, html_file):
@@ -94,6 +94,12 @@ def main(language, null_value, convert_numbers, group_symbol, decimal_symbol,
     Select a table within an HTML document and convert it to CSV. By
     default stdin will be used as input, but you can also pass a
     filename.
+
+    EXPRESSION can be a number (using the '--index' option) that indexes
+    a table in the HTML document, an XPath expression (using the
+    '--xpath' option), or a CSS selector (using the '--css' option). By
+    default '--index' is assumed, and the first table in the HTML
+    document is used if no EXPRESSION is given.
     """
     # Ensure ``SIGPIPE`` doesn't throw an exception. This prevents the
     # ``[Errno 32] Broken pipe`` error you see when, e.g., piping to ``head``.
