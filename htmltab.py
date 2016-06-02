@@ -87,11 +87,13 @@ def numberise(value, group_symbol, decimal_symbol, currency_symbols):
                    "currency symbol  [default: '{}']".format("', '".join(
                        DEFAULT_CURRENCY_SYMBOLS)))
 @click.argument("expression")
-@click.argument("html_file", type=click.File("rb"))
+@click.argument("html_file", type=click.File("rb"), default="-")
 def main(language, null_value, convert_numbers, group_symbol, decimal_symbol,
          currency_symbol, expression, html_file):
     """
-    Select a table within an HTML document and convert it to CSV.
+    Select a table within an HTML document and convert it to CSV. By
+    default stdin will be used as input, but you can also pass a
+    filename.
     """
     # Ensure ``SIGPIPE`` doesn't throw an exception. This prevents the
     # ``[Errno 32] Broken pipe`` error you see when, e.g., piping to ``head``.
