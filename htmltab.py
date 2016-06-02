@@ -132,6 +132,8 @@ def main(language, null_value, convert_numbers, group_symbol, decimal_symbol,
         elif language == "xpath":
             table = doc.xpath(expression)
         elif language == "index":
+            if int(expression) == 0:
+                raise click.BadParameter("indices start from 1")
             table = doc.xpath("(//table)[{}]".format(int(expression)))
     except (SelectorError, lxml.etree.LxmlError, ValueError):
         # Either the CSS selector was invalid, the XPath expression was
