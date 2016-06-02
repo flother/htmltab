@@ -100,6 +100,10 @@ def main(language, null_value, convert_numbers, group_symbol, decimal_symbol,
     '--xpath' option), or a CSS selector (using the '--css' option). By
     default '--index' is assumed, and the first table in the HTML
     document is used if no EXPRESSION is given.
+
+    A table is defined as a single 'table' element, or a collection of
+    one or more 'tr' elements. If a CSS selector or XPath expression
+    matches anything else an error is returned.
     """
     # Ensure ``SIGPIPE`` doesn't throw an exception. This prevents the
     # ``[Errno 32] Broken pipe`` error you see when, e.g., piping to ``head``.
@@ -128,36 +132,39 @@ def main(language, null_value, convert_numbers, group_symbol, decimal_symbol,
     # index.
     try:
         if language == "css":
-            table = doc.cssselect(expression)
+            elements = doc.cssselect(expression)
         elif language == "xpath":
-            table = doc.xpath(expression)
+            elements = doc.xpath(expression)
         elif language == "index":
             if int(expression) == 0:
                 raise click.BadParameter("indices start from 1")
-            table = doc.xpath("(//table)[{}]".format(int(expression)))
+            elements = doc.xpath("(//table)[{}]".format(int(expression)))
     except (SelectorError, lxml.etree.LxmlError, ValueError):
         # Either the CSS selector was invalid, the XPath expression was
         # invalid, or the index wasn't an integer.
         raise click.BadParameter(expression)
 
-    # Complain if more than one element was returned.
-    if len(table) != 1:
-        raise click.UsageError("expression matched {} elements.".format(
-            len(table)))
-    table = table[0]
-    # Complain if the element isn't a table element.
-    if table.tag != "table":
-        click.UsageError("expression matched {} element, not table "
-                         "element.".format(table.tag))
+    # Acceptable inputs are a single table element, or a collection of one or
+    # more tr elements. Anything else is considered bad input.
+    if len(elements) == 0:
+        raise click.UsageError("expression matched no elements.")
+    elif len(elements) == 1 and elements[0].tag == "table":
+        # The convoluted XPath expression below is to stop nested tables being
+        # flattened out in the output. We only want the table rows that are
+        # direct children of the selected table to be output as rows. Any
+        # tables within the selected table should be output as text within a
+        # row cell, not added as distinct, top-level rows.
+        elements = elements[0].xpath("./tr|./thead/tr|./tbody/tr|./tfoot/tr")
+    elif len(elements) == 1 and elements[0].tag != "tr":
+        raise click.UsageError("expression matched {} element".format(
+            elements[0].tag))
+    elif any(el.tag != "tr" for el in elements):
+        raise click.UsageError("expression must match one 'table' element or "
+                               "one or more 'tr' elements")
 
     # Output to stdout.
     rows = csv.writer(sys.stdout)
-    # The convoluted XPath expression below is to stop nested tables being
-    # flattened out in the output. We only want the table rows that are direct
-    # children of the selected table to be output as rows. Any tables within
-    # the selected table should be output as text within a row cell, not added
-    # as distinct, top-level rows.
-    for tr in table.xpath("./tr|./thead/tr|./tbody/tr|./tfoot/tr"):
+    for tr in elements:
         row = []
         # Loop through all th and td elements and output them as cells. Since
         # CSV doesn't have any concept of headers or data cells we don't need
