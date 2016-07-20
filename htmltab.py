@@ -5,10 +5,14 @@ output the CSV to ``stdout``.
 """
 import csv
 from decimal import Decimal, InvalidOperation
+import urllib.error
+import urllib.parse
+import urllib.request
 import sys
 
 from bs4 import UnicodeDammit
 import click
+from click.utils import safecall
 from lxml.etree import LxmlError
 import lxml.html
 from lxml.cssselect import SelectorError
@@ -59,6 +63,46 @@ def numberise(value, group_symbol, decimal_symbol, currency_symbols):
         raise ValueError("{} is not numeric".format(value))
 
 
+class URL(click.ParamType):
+
+    """
+    Declare a parameter to be a URL as understood by ``urllib``. The URL
+    is requested using the GET method and the connection is closed once
+    the context is closed (the command finishes execution).
+    """
+
+    name = "url"
+
+    def convert(self, value, param, ctx):
+        """
+        Opens the parameter value as a URL using
+        ``urllib.request.urlopen``. The timeout is set to ten seconds
+        but otherwise no alterations are made to the defaults (i.e. no
+        authentication, no headers added). Any error causes the command
+        to fail.
+        """
+        try:
+            request = urllib.request.urlopen(value, timeout=10)
+            if ctx is not None:
+                ctx.call_on_close(safecall(request.close))
+        except urllib.error.URLError as err:
+            self.fail("Could not open URL: {}: {}".format(value, err.reason),
+                      param, ctx)
+        return request
+
+
+def open_file_or_url(ctx, param, value):
+    """
+    Click option callback to handle an option that can either be a local
+    file or an HTTP/HTTPS URL.
+    """
+    scheme = urllib.parse.urlparse(value).scheme
+    if scheme in ("http", "https"):
+        return URL().convert(value, param, ctx)
+    else:
+        return click.File("rb").convert(value, param, ctx)
+
+
 @click.command()
 @click.option("--index", "-i", "language", flag_value="index", default=True,
               help="Interpret EXPRESSION as an index, starting from 1.")
@@ -87,13 +131,13 @@ def numberise(value, group_symbol, decimal_symbol, currency_symbols):
                    "currency symbol  [default: '{}']".format("', '".join(
                        DEFAULT_CURRENCY_SYMBOLS)))
 @click.argument("expression", default="1")
-@click.argument("html_file", type=click.File("rb"), default="-")
+@click.argument("html_file", callback=open_file_or_url, default="-")
 def main(language, null_value, convert_numbers, group_symbol, decimal_symbol,
          currency_symbol, expression, html_file):
     """
     Select a table within an HTML document and convert it to CSV. By
     default stdin will be used as input, but you can also pass a
-    filename.
+    filename or a URL.
 
     EXPRESSION can be a number (using the '--index' option) that indexes
     a table in the HTML document, an XPath expression (using the

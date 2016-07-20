@@ -1,9 +1,10 @@
 Command-line utility to select a table within an HTML document and convert it
 to CSV. Here we can get the historical population of Reykjavík from Wikipedia::
 
-    $ curl -s https://en.wikipedia.org/wiki/Reykjav%C3%ADk | \
-    > htmltab -n '-' -n '--' h2+p+table.wikitable - | \
-    > csvlook
+    $ htmltab -n '-' \
+              -n '--' \
+              --css h2+p+table.wikitable \
+              https://en.wikipedia.org/wiki/Reykjav%C3%ADk | csvlook
     |-------+--------+---------|
     |  Year | City   | Metro   |
     |-------+--------+---------|
@@ -49,18 +50,18 @@ Usage
 
     Usage: htmltab [OPTIONS] [EXPRESSION] [HTML_FILE]
 
-    Select a table within an HTML document and convert it to CSV. By default
-    stdin will be used as input, but you can also pass a filename.
+      Select a table within an HTML document and convert it to CSV. By default
+      stdin will be used as input, but you can also pass a filename or a URL.
 
-    EXPRESSION can be a number (using the '--index' option) that indexes a
-    table in the HTML document, an XPath expression (using the '--xpath'
-    option), or a CSS selector (using the '--css' option). By default '--
-    index' is assumed, and the first table in the HTML document is used if no
-    EXPRESSION is given.
+      EXPRESSION can be a number (using the '--index' option) that indexes a
+      table in the HTML document, an XPath expression (using the '--xpath'
+      option), or a CSS selector (using the '--css' option). By default '--
+      index' is assumed, and the first table in the HTML document is used if no
+      EXPRESSION is given.
 
-    A table is defined as a single 'table' element, or a collection of one or
-    more 'tr' elements. If a CSS selector or XPath expression matches anything
-    else an error is returned.
+      A table is defined as a single 'table' element, or a collection of one or
+      more 'tr' elements. If a CSS selector or XPath expression matches anything
+      else an error is returned.
 
     Options:
       -i, --index                     Interpret EXPRESSION as an index, starting
