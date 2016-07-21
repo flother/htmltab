@@ -5,10 +5,8 @@ output the CSV to ``stdout``.
 """
 import csv
 from decimal import Decimal, InvalidOperation
-import urllib.error
-import urllib.parse
-import urllib.request
 import sys
+import urllib.parse
 
 from bs4 import UnicodeDammit
 import click
@@ -16,8 +14,11 @@ from click.utils import safecall
 from lxml.etree import LxmlError
 import lxml.html
 from lxml.cssselect import SelectorError
+import requests
+import requests.exceptions
 
 
+USER_AGENT = "HTMLTab (+https://github.com/flother/htmltab)"
 DEFAULT_NULL_VALUES = ("na", "n/a", ".", "-")
 DEFAULT_CURRENCY_SYMBOLS = ("$", "¥", "£", "€")
 
@@ -82,17 +83,23 @@ class URL(click.ParamType):
         Any error causes the command to fail.
         """
         try:
-            request = urllib.request.Request(value)
-            request.add_header("User-Agent",
-                               "HTMLTab (+https://github.com/flother/htmltab)")
-            response = urllib.request.urlopen(request, timeout=10)
+            response = requests.get(value, timeout=10,
+                                    headers={"User-Agent": USER_AGENT})
             if ctx is not None:
                 ctx.call_on_close(safecall(response.close))
-        except urllib.error.HTTPError as err:
-            self.fail("HTTP {} {} ({})".format(err.code, err.reason, value),
+            response.raise_for_status()
+        except requests.exceptions.ConnectionError:
+            self.fail("Connection error ({})".format(value), param, ctx)
+        except requests.exceptions.Timeout:
+            self.fail("Time out ({})".format(value), param, ctx)
+        except requests.exceptions.TooManyRedirects:
+            self.fail("Too many redirects ({})".format(value), param, ctx)
+        except requests.exceptions.HTTPError:
+            self.fail("HTTP {} {} ({})".format(response.status_code,
+                                               response.reason, value),
                       param, ctx)
-        except urllib.error.URLError as err:
-            self.fail("{} ({})".format(err.reason, value), param, ctx)
+        except requests.exceptions.RequestException:
+            self.fail("Request error ({})".format(value), param, ctx)
         return response
 
 
@@ -103,9 +110,9 @@ def open_file_or_url(ctx, param, value):
     """
     scheme = urllib.parse.urlparse(value).scheme
     if scheme in ("http", "https"):
-        return URL().convert(value, param, ctx)
+        return URL().convert(value, param, ctx).text
     else:
-        return click.File("rb").convert(value, param, ctx)
+        return click.File("rb").convert(value, param, ctx).read()
 
 
 @click.command()
@@ -167,7 +174,7 @@ def main(language, null_value, convert_numbers, group_symbol, decimal_symbol,
     # Read the HTML file using lxml's HTML parser, but convert to Unicode using
     # Beautiful Soup's UnicodeDammit class.
     try:
-        unicode_html = UnicodeDammit(html_file.read(), smart_quotes_to="html",
+        unicode_html = UnicodeDammit(html_file, smart_quotes_to="html",
                                      is_html=True)
         if unicode_html.unicode_markup is None:
             raise click.UsageError("no HTML provided.")

@@ -4,7 +4,7 @@ to CSV. Here we can get the historical population of Reykjavík from Wikipedia::
     $ htmltab -n '-' \
               -n '--' \
               --css h2+p+table.wikitable \
-              https://en.wikipedia.org/wiki/Reykjav%C3%ADk | csvlook
+              https://en.wikipedia.org/wiki/Reykjavík | csvlook
     |-------+--------+---------|
     |  Year | City   | Metro   |
     |-------+--------+---------|
@@ -41,7 +41,8 @@ Installation
 
     pip3 install -e git+https://github.com/flother/htmltab#egg=htmltab
 
-HTMLTab requires `Python 3`_, `Click`_, `lxml`_, cssselect_, and `Beautiful Soup 4`_.
+HTMLTab requires `Python 3`_, Click_, lxml_, cssselect_, `Beautiful Soup 4`_,
+and requests_.
 
 Usage
 -----
@@ -93,3 +94,4 @@ Usage
 .. _lxml: http://lxml.de
 .. _cssselect: https://pythonhosted.org/cssselect/
 .. _Beautiful Soup 4: https://www.crummy.com/software/BeautifulSoup/
+.. _requests: http://python-requests.org/
