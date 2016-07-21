@@ -116,12 +116,6 @@ def open_file_or_url(ctx, param, value):
 
 
 @click.command()
-@click.option("--index", "-i", "language", flag_value="index", default=True,
-              help="Interpret EXPRESSION as an index, starting from 1.")
-@click.option("--css", "-s", "language", flag_value="css",
-              help="Interpret EXPRESSION as a CSS selector.")
-@click.option("--xpath", "-x", "language", flag_value="xpath",
-              help="Interpret EXPRESSION as an XPath expression.")
 @click.option("--null-value", "-n", multiple=True,
               help="Case-insensitive value to convert to an empty cell in the "
                    "CSV output. Use multiple times if you have more than one "
@@ -144,22 +138,21 @@ def open_file_or_url(ctx, param, value):
                        DEFAULT_CURRENCY_SYMBOLS)))
 @click.argument("expression", default="1")
 @click.argument("html_file", callback=open_file_or_url, default="-")
-def main(language, null_value, convert_numbers, group_symbol, decimal_symbol,
+def main(null_value, convert_numbers, group_symbol, decimal_symbol,
          currency_symbol, expression, html_file):
     """
     Select a table within an HTML document and convert it to CSV. By
     default stdin will be used as input, but you can also pass a
     filename or a URL.
 
-    EXPRESSION can be a number (using the '--index' option) that indexes
-    a table in the HTML document, an XPath expression (using the
-    '--xpath' option), or a CSS selector (using the '--css' option). By
-    default '--index' is assumed, and the first table in the HTML
-    document is used if no EXPRESSION is given.
+    If EXPRESSION is a number it will be used as an index to match the
+    table in that position in the HTML document (e.g. '4' will match the
+    fourth table in the document The first table has a position of 1,
+    not 0.
 
-    A table is defined as a single 'table' element, or a collection of
-    one or more 'tr' elements. If a CSS selector or XPath expression
-    matches anything else an error is returned.
+    If not an integer, EXPRESSION can be a valid CSS selector or XPath
+    expression. The selector or expression must match either a single
+    'table' element or one or more 'tr' elements.
     """
     # Ensure ``SIGPIPE`` doesn't throw an exception. This prevents the
     # ``[Errno 32] Broken pipe`` error you see when, e.g., piping to ``head``.
@@ -184,21 +177,24 @@ def main(language, null_value, convert_numbers, group_symbol, decimal_symbol,
     except (LxmlError, TypeError):
         raise click.UsageError("could not parse HTML.")
 
-    # Find the element(s) that match the CSS selector, XPath expression, or
-    # index.
+    # Find the element(s) that match the index, CSS selector, or XPath
+    # expression.
     try:
-        if language == "css":
+        int(expression)
+        elements = doc.xpath("(//table)[{}]".format(int(expression)))
+    except ValueError:
+        # Expression wasn't a valid integer so try to use it as a CSS selector.
+        try:
             elements = doc.cssselect(expression)
-        elif language == "xpath":
-            elements = doc.xpath(expression)
-        elif language == "index":
-            if int(expression) == 0:
-                raise click.BadParameter("indices start from 1")
-            elements = doc.xpath("(//table)[{}]".format(int(expression)))
-    except (SelectorError, lxml.etree.LxmlError, ValueError):
-        # Either the CSS selector was invalid, the XPath expression was
-        # invalid, or the index wasn't an integer.
-        raise click.BadParameter(expression)
+        except SelectorError:
+            # Nope, not a valid CSS expression. Last attempt is to try it as an
+            # Path expression.
+            try:
+                elements = doc.xpath(expression)
+            except lxml.etree.LxmlError:
+                # Send an error back to the user because their expression isn't
+                # an integer, a CSS selector, or an XPath expression.
+                raise click.BadParameter(expression)
 
     # Acceptable inputs are a single table element, or a collection of one or
     # more tr elements. Anything else is considered bad input.

@@ -3,7 +3,7 @@ to CSV. Here we can get the historical population of Reykjavík from Wikipedia::
 
     $ htmltab -n '-' \
               -n '--' \
-              --css h2+p+table.wikitable \
+              h2+p+table.wikitable \
               https://en.wikipedia.org/wiki/Reykjavík | csvlook
     |-------+--------+---------|
     |  Year | City   | Metro   |
@@ -54,21 +54,15 @@ Usage
       Select a table within an HTML document and convert it to CSV. By default
       stdin will be used as input, but you can also pass a filename or a URL.
 
-      EXPRESSION can be a number (using the '--index' option) that indexes a
-      table in the HTML document, an XPath expression (using the '--xpath'
-      option), or a CSS selector (using the '--css' option). By default '--
-      index' is assumed, and the first table in the HTML document is used if no
-      EXPRESSION is given.
+      If EXPRESSION is a number it will be used as an index to match the table
+      in that position in the HTML document (e.g. '4' will match the fourth
+      table in the document The first table has a position of 1, not 0.
 
-      A table is defined as a single 'table' element, or a collection of one or
-      more 'tr' elements. If a CSS selector or XPath expression matches anything
-      else an error is returned.
+      If not an integer, EXPRESSION can be a valid CSS selector or XPath
+      expression. The selector or expression must match either a single 'table'
+      element or one or more 'tr' elements.
 
     Options:
-      -i, --index                     Interpret EXPRESSION as an index, starting
-                                      from 1.
-      -s, --css                       Interpret EXPRESSION as a CSS selector.
-      -x, --xpath                     Interpret EXPRESSION as an XPath expression.
       -n, --null-value TEXT           Case-insensitive value to convert to an
                                       empty cell in the CSV output. Use multiple
                                       times if you have more than one null value.
