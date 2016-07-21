@@ -88,9 +88,11 @@ class URL(click.ParamType):
             response = urllib.request.urlopen(request, timeout=10)
             if ctx is not None:
                 ctx.call_on_close(safecall(response.close))
-        except urllib.error.URLError as err:
-            self.fail("Could not open URL: {}: {}".format(value, err.reason),
+        except urllib.error.HTTPError as err:
+            self.fail("HTTP {} {} ({})".format(err.code, err.reason, value),
                       param, ctx)
+        except urllib.error.URLError as err:
+            self.fail("{} ({})".format(err.reason, value), param, ctx)
         return response
 
 
