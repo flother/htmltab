@@ -214,7 +214,12 @@ def main(null_value, convert_numbers, group_symbol, decimal_symbol,
         raise click.UsageError("expression must match one 'table' element or "
                                "one or more 'tr' elements")
 
-    # Output to stdout.
+    # Use the set of default null values if the user didn't specify any. When a
+    # cell value matches one of these it will be output as an empty cell in the
+    # CSV.
+    null_value = null_value or DEFAULT_NULL_VALUES
+
+    # Output the CSV to stdout.
     rows = csv.writer(sys.stdout)
     for tr in elements:
         row = []

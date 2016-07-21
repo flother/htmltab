@@ -3,8 +3,8 @@ to CSV. Here we can get the historical population of Reykjavík from Wikipedia::
 
     $ htmltab h2+p+table.wikitable https://en.wikipedia.org/wiki/Reykjavík
     Year,City,Metro
-    1801,600,-
-    1860,1450,-
+    1801,600,
+    1860,1450,
     1901,6321,8221
     1910,11449,14534
     1920,17450,21347
@@ -14,9 +14,9 @@ to CSV. Here we can get the historical population of Reykjavík from Wikipedia::
     1960,72407,88315
     1970,81693,106152
     1980,83766,121698
-    1985,89868,--
+    1985,89868,
     1990,97569,145980
-    1995,104258,--
+    1995,104258,
     2000,110852,175000
     2005,114800,187105
     2006,115420,191612
