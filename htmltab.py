@@ -76,19 +76,22 @@ class URL(click.ParamType):
     def convert(self, value, param, ctx):
         """
         Opens the parameter value as a URL using
-        ``urllib.request.urlopen``. The timeout is set to ten seconds
-        but otherwise no alterations are made to the defaults (i.e. no
-        authentication, no headers added). Any error causes the command
-        to fail.
+        ``urllib.request.urlopen``. A custom User-Agent header is used
+        and a ten-second timeout is set, but otherwise no alterations
+        are made to the defaults (i.e. no authentication, no cookies).
+        Any error causes the command to fail.
         """
         try:
-            request = urllib.request.urlopen(value, timeout=10)
+            request = urllib.request.Request(value)
+            request.add_header("User-Agent",
+                               "HTMLTab (+https://github.com/flother/htmltab)")
+            response = urllib.request.urlopen(request, timeout=10)
             if ctx is not None:
-                ctx.call_on_close(safecall(request.close))
+                ctx.call_on_close(safecall(response.close))
         except urllib.error.URLError as err:
             self.fail("Could not open URL: {}: {}".format(value, err.reason),
                       param, ctx)
-        return request
+        return response
 
 
 def open_file_or_url(ctx, param, value):
