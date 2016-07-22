@@ -116,6 +116,9 @@ def open_file_or_url(ctx, param, value):
 
 
 @click.command()
+@click.option("--select", "-s", default="1",
+              help="Integer index, CSS selector, or XPath expression that "
+                   "determines the table to convert to CSV.")
 @click.option("--null-value", "-n", multiple=True,
               help="Case-insensitive value to convert to an empty cell in the "
                    "CSV output. Use multiple times if you have more than one "
@@ -136,24 +139,32 @@ def open_file_or_url(ctx, param, value):
                    "strings. Use multiple times if you have more than one "
                    "currency symbol  [default: '{}']".format("', '".join(
                        DEFAULT_CURRENCY_SYMBOLS)))
-@click.argument("expression", default="1")
 @click.argument("html_file", callback=open_file_or_url, default="-")
 @click.version_option()
-def main(null_value, convert_numbers, group_symbol, decimal_symbol,
-         currency_symbol, expression, html_file):
+def main(select, null_value, convert_numbers, group_symbol, decimal_symbol,
+         currency_symbol, html_file):
     """
     Select a table within an HTML document and convert it to CSV. By
     default stdin will be used as input, but you can also pass a
     filename or a URL.
 
-    If EXPRESSION is a number it will be used as an index to match the
-    table in that position in the HTML document (e.g. '4' will match the
-    fourth table in the document The first table has a position of 1,
-    not 0.
+    Unless otherwise specified, the first table element in the HTML
+    document is converted to CSV. To change that behaviour pass an
+    alternative using the '--select' option. The value may be an integer
+    index, a CSS selector, or an XPath expression.
 
-    If not an integer, EXPRESSION can be a valid CSS selector or XPath
-    expression. The selector or expression must match either a single
-    'table' element or one or more 'tr' elements.
+    To select the fourth table within the the file 'foo.html':
+
+      htmltab --select 4 foo.html
+
+    To select the table with the id 'data':
+
+      htmltab --select table#data foo.html
+
+    To select the rows within the second table inside the 'div' element
+    with id 'bar', while excluding the rows in the header and footer:
+
+      htmltab --select "(//div[@id='bar']//table)[2]/tbody/tr" foo.html
     """
     # Ensure ``SIGPIPE`` doesn't throw an exception. This prevents the
     # ``[Errno 32] Broken pipe`` error you see when, e.g., piping to ``head``.
@@ -181,26 +192,26 @@ def main(null_value, convert_numbers, group_symbol, decimal_symbol,
     # Find the element(s) that match the index, CSS selector, or XPath
     # expression.
     try:
-        int(expression)
-        elements = doc.xpath("(//table)[{}]".format(int(expression)))
+        int(select)
+        elements = doc.xpath("(//table)[{}]".format(int(select)))
     except ValueError:
         # Expression wasn't a valid integer so try to use it as a CSS selector.
         try:
-            elements = doc.cssselect(expression)
+            elements = doc.cssselect(select)
         except SelectorError:
             # Nope, not a valid CSS expression. Last attempt is to try it as an
             # Path expression.
             try:
-                elements = doc.xpath(expression)
+                elements = doc.xpath(select)
             except lxml.etree.LxmlError:
-                # Send an error back to the user because their expression isn't
-                # an integer, a CSS selector, or an XPath expression.
-                raise click.BadParameter(expression)
+                # Send an error back to the user because their select value
+                # isn't an integer, a CSS selector, or an XPath expression.
+                raise click.BadParameter(select)
 
     # Acceptable inputs are a single table element, or a collection of one or
     # more tr elements. Anything else is considered bad input.
     if len(elements) == 0:
-        raise click.UsageError("expression matched no elements.")
+        raise click.UsageError("value matched no elements.")
     elif len(elements) == 1 and elements[0].tag == "table":
         # The convoluted XPath expression below is to stop nested tables being
         # flattened out in the output. We only want the table rows that are
@@ -209,11 +220,11 @@ def main(null_value, convert_numbers, group_symbol, decimal_symbol,
         # row cell, not added as distinct, top-level rows.
         elements = elements[0].xpath("./tr|./thead/tr|./tbody/tr|./tfoot/tr")
     elif len(elements) == 1 and elements[0].tag != "tr":
-        raise click.UsageError("expression matched {} element".format(
+        raise click.UsageError("select value matched {} element".format(
             elements[0].tag))
     elif any(el.tag != "tr" for el in elements):
-        raise click.UsageError("expression must match one 'table' element or "
-                               "one or more 'tr' elements")
+        raise click.UsageError("select value must match one 'table' element "
+                               "or one or more 'tr' elements")
 
     # Use the set of default null values if the user didn't specify any. When a
     # cell value matches one of these it will be output as an empty cell in the
