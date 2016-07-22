@@ -1,7 +1,7 @@
 Command-line utility to select a table within an HTML document and convert it
 to CSV. Here we can get the historical population of Reykjavík from Wikipedia::
 
-    $ htmltab h2+p+table.wikitable https://en.wikipedia.org/wiki/Reykjavík
+    $ htmltab --select h2+p+table.wikitable https://en.wikipedia.org/wiki/Reykjavík
     Year,City,Metro
     1801,600,
     1860,1450,
@@ -43,38 +43,52 @@ Usage
 
 .. code-block:: text
 
-    Usage: htmltab [OPTIONS] [EXPRESSION] [HTML_FILE]
+  Usage: htmltab [OPTIONS] [HTML_FILE]
 
-      Select a table within an HTML document and convert it to CSV. By default
-      stdin will be used as input, but you can also pass a filename or a URL.
+    Select a table within an HTML document and convert it to CSV. By default
+    stdin will be used as input, but you can also pass a filename or a URL.
 
-      If EXPRESSION is a number it will be used as an index to match the table
-      in that position in the HTML document (e.g. '4' will match the fourth
-      table in the document The first table has a position of 1, not 0.
+    Unless otherwise specified, the first table element in the HTML document
+    is converted to CSV. To change that behaviour pass an alternative using
+    the '--select' option. The value may be an integer index, a CSS selector,
+    or an XPath expression.
 
-      If not an integer, EXPRESSION can be a valid CSS selector or XPath
-      expression. The selector or expression must match either a single 'table'
-      element or one or more 'tr' elements.
+    To select the fourth table within the the file 'foo.html':
 
-    Options:
-      -n, --null-value TEXT           Case-insensitive value to convert to an
-                                      empty cell in the CSV output. Use multiple
-                                      times if you have more than one null value.
-                                      [default: 'na', 'n/a', '.', '-']
-      -c, --convert-numbers / -k, --keep-numbers
-                                      Convert number-like strings into numbers
-                                      (e.g. remove group symbols, percent signs)
-                                      or leave unchanged.  [default: convert]
-      -g, --group-symbol TEXT         Symbol used to group digits in numbers (e.g.
-                                      the ',' in '1,000.00').  [default: ,]
-      -d, --decimal-symbol TEXT       Symbol used to separate integer from
-                                      fraction in numbers (e.g. the '.' in
-                                      '1,000.00').  [default: .]
-      -u, --currency-symbol TEXT      Currency symbol to remove when converting
-                                      number-like strings. Use multiple times if
-                                      you have more than one currency symbol
-                                      [default: '$', '¥', '£', '€']
-      --help                          Show this message and exit.
+      htmltab --select 4 foo.html
+
+    To select the table with the id 'data':
+
+      htmltab --select table#data foo.html
+
+    To select the rows within the second table inside the 'div' element with
+    id 'bar', while excluding the rows in the header and footer:
+
+      htmltab --select "(//div[@id='bar']//table)[2]/tbody/tr" foo.html
+
+  Options:
+    -s, --select TEXT               Integer index, CSS selector, or XPath
+                                    expression that determines the table to
+                                    convert to CSV.
+    -n, --null-value TEXT           Case-insensitive value to convert to an
+                                    empty cell in the CSV output. Use multiple
+                                    times if you have more than one null value.
+                                    [default: 'na', 'n/a', '.', '-']
+    -c, --convert-numbers / -k, --keep-numbers
+                                    Convert number-like strings into numbers
+                                    (e.g. remove group symbols, percent signs)
+                                    or leave unchanged.  [default: convert]
+    -g, --group-symbol TEXT         Symbol used to group digits in numbers (e.g.
+                                    the ',' in '1,000.00').  [default: ,]
+    -d, --decimal-symbol TEXT       Symbol used to separate integer from
+                                    fraction in numbers (e.g. the '.' in
+                                    '1,000.00').  [default: .]
+    -u, --currency-symbol TEXT      Currency symbol to remove when converting
+                                    number-like strings. Use multiple times if
+                                    you have more than one currency symbol
+                                    [default: '$', '¥', '£', '€']
+    --version                       Show the version and exit.
+    --help                          Show this message and exit.
 
 
 .. _Python 3: https://docs.python.org/3/
