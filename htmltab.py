@@ -138,6 +138,7 @@ def open_file_or_url(ctx, param, value):
                        DEFAULT_CURRENCY_SYMBOLS)))
 @click.argument("expression", default="1")
 @click.argument("html_file", callback=open_file_or_url, default="-")
+@click.version_option()
 def main(null_value, convert_numbers, group_symbol, decimal_symbol,
          currency_symbol, expression, html_file):
     """
