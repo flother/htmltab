@@ -1,8 +1,10 @@
 from setuptools import setup
 
+from htmltab import __version__
+
 
 setup(name="htmltab",
-      version="0.1.0-pre",
+      version=__version__,
       description="A command-line utility that converts an HTML table into "
                   "CSV data",
       long_description=open("README.rst").read(),
