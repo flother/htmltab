@@ -6,13 +6,10 @@ output the CSV to ``stdout``.
 import csv
 import sys
 
-from bs4 import UnicodeDammit
 import click
 from lxml.etree import LxmlError
-import lxml.html
-from lxml.cssselect import SelectorError
 
-from .utils import open_file_or_url, numberise
+from .utils import open_file_or_url, parse_html, select_elements, numberise
 
 
 DEFAULT_NULL_VALUES = ("na", "n/a", ".", "-")
@@ -80,42 +77,24 @@ def main(select, null_value, convert_numbers, group_symbol, decimal_symbol,
         # Do nothing on platforms without signals or ``SIGPIPE``.
         pass
 
-    # Read the HTML file using lxml's HTML parser, but convert to Unicode using
-    # Beautiful Soup's UnicodeDammit class.
+    # Parse file contents as HTML.
     try:
-        unicode_html = UnicodeDammit(html_file, smart_quotes_to="html",
-                                     is_html=True)
-        if unicode_html.unicode_markup is None:
-            raise click.UsageError("no HTML provided.")
-        if not unicode_html.unicode_markup:
-            raise click.UsageError("could not detect character encoding.")
-        doc = lxml.html.fromstring(unicode_html.unicode_markup)
+        doc = parse_html(html_file)
+    except ValueError as err:
+        raise click.UsageError(err)
     except (LxmlError, TypeError):
-        raise click.UsageError("could not parse HTML.")
+        raise click.UsageError("could not parse HTML")
 
-    # Find the element(s) that match the index, CSS selector, or XPath
-    # expression.
+    # Select the elements that the user's interested in.
     try:
-        int(select)
-        elements = doc.xpath("(//table)[{}]".format(int(select)))
-    except ValueError:
-        # Expression wasn't a valid integer so try to use it as a CSS selector.
-        try:
-            elements = doc.cssselect(select)
-        except SelectorError:
-            # Nope, not a valid CSS expression. Last attempt is to try it as an
-            # Path expression.
-            try:
-                elements = doc.xpath(select)
-            except lxml.etree.LxmlError:
-                # Send an error back to the user because their select value
-                # isn't an integer, a CSS selector, or an XPath expression.
-                raise click.BadParameter(select)
+        elements = select_elements(doc, select)
+    except ValueError as err:
+        raise click.BadParameter(err)
 
     # Acceptable inputs are a single table element, or a collection of one or
     # more tr elements. Anything else is considered bad input.
     if len(elements) == 0:
-        raise click.UsageError("value matched no elements.")
+        raise click.UsageError("value matched no elements")
     elif len(elements) == 1 and elements[0].tag == "table":
         # The convoluted XPath expression below is to stop nested tables being
         # flattened out in the output. We only want the table rows that are

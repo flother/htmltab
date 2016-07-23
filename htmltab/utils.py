@@ -1,7 +1,11 @@
 from decimal import Decimal, InvalidOperation
 import urllib.parse
 
-import click
+from bs4 import UnicodeDammit
+from click.types import File
+from lxml.cssselect import SelectorError
+from lxml.etree import LxmlError
+import lxml.html
 
 from .types import URL
 
@@ -15,7 +19,51 @@ def open_file_or_url(ctx, param, value):
     if scheme in ("http", "https"):
         return URL().convert(value, param, ctx).text
     else:
-        return click.File("rb").convert(value, param, ctx).read()
+        return File("rb").convert(value, param, ctx).read()
+
+
+def parse_html(html_file):
+    """
+    Read the HTML file using lxml's HTML parser, but convert to Unicode
+    using Beautiful Soup's UnicodeDammit class.
+
+    Can raise LxmlError or TypeError if the file can't be opened or
+    parsed.
+    """
+    unicode_html = UnicodeDammit(html_file, smart_quotes_to="html",
+                                 is_html=True)
+    if unicode_html.unicode_markup is None:
+        raise ValueError("no HTML provided")
+    if not unicode_html.unicode_markup:
+        raise ValueError("could not detect character encoding")
+    return lxml.html.fromstring(unicode_html.unicode_markup)
+
+
+def select_elements(doc, select):
+    """
+    Return the elements within ``doc`` that match the selector
+    ``select``. The selector can be an index, a CSS selector, or an
+    XPath expression.
+    """
+    try:
+        int(select)
+        elements = doc.xpath("(//table)[{}]".format(int(select)))
+    except ValueError:
+        # Expression wasn't a valid integer so try to use it as a CSS selector.
+        try:
+            elements = doc.cssselect(select)
+        except SelectorError:
+            # Nope, not a valid CSS expression. Last attempt is to try it as an
+            # Path expression.
+            try:
+                elements = doc.xpath(select)
+            except LxmlError:
+                # Catch the specific LXML error and raise a more generic error
+                # because the problem could lie with any of the index, CSS
+                # selector, or XPath expression.
+                raise ValueError("'{}' not an index, CSS selector, or XPath "
+                                 "expression".format(select))
+    return elements
 
 
 def numberise(value, group_symbol, decimal_symbol, currency_symbols):
