@@ -17,9 +17,9 @@ setup(name="htmltab",
           "Programming Language :: Python :: 3",
           "Topic :: Utilities",
       ],
-      py_modules=["htmltab"],
+      packages=["htmltab"],
       entry_points={
-          "console_scripts": ["htmltab=htmltab:main"],
+          "console_scripts": ["htmltab=htmltab.cli:main"],
       },
       install_requires=[
           "beautifulsoup4>=4.3.2",

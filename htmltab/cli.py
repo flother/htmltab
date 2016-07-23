@@ -4,115 +4,19 @@ Command-line utility to parse an HTML document, find a particular
 output the CSV to ``stdout``.
 """
 import csv
-from decimal import Decimal, InvalidOperation
 import sys
-import urllib.parse
 
 from bs4 import UnicodeDammit
 import click
-from click.utils import safecall
 from lxml.etree import LxmlError
 import lxml.html
 from lxml.cssselect import SelectorError
-import requests
-import requests.exceptions
+
+from .utils import open_file_or_url, numberise
 
 
-USER_AGENT = "HTMLTab (+https://github.com/flother/htmltab)"
 DEFAULT_NULL_VALUES = ("na", "n/a", ".", "-")
 DEFAULT_CURRENCY_SYMBOLS = ("$", "¥", "£", "€")
-
-
-def numberise(value, group_symbol, decimal_symbol, currency_symbols):
-    """
-    Convert a string to a :class:`decimal.Decimal` object, if the string
-    is number-like.
-
-    A string's considered number-like if it's made up of numbers with
-    or without group and decimal symbols, and optionally suffixed by
-    percent signs, prefixed by a +/- sign, or surrounded by currency
-    symbols. It's pretty lenient, and could easily parse something as a
-    number when it's not, but it's good enough.
-
-    Args:
-        value: String to attempt to convert to a number
-        group_symbol: symbol used to group digits in numbers (e.g. the
-            ',' in '1,000.00')
-        decimal_symbol: Symbol used to separate integer from fraction in
-            numbers (e.g. the '.' in '1,000.00').
-        currency_symbols: List of currency symbols.
-
-    Returns:
-        :class:`decimal.Decimal`
-
-    Raises:
-        :class:`ValueError`: ``value`` is not numeric
-    """
-    number = value.strip("%")
-    if len(number) > 0 and number[0] == "-":
-        number = number[1:]
-        sign = Decimal("-1")
-    else:
-        sign = Decimal("1")
-    for symbol in currency_symbols:
-        number = number.strip(symbol)
-    number = number.replace(group_symbol, "")
-    number = number.replace(decimal_symbol, ".")
-    try:
-        return Decimal(number) * sign
-    except InvalidOperation:
-        raise ValueError("{} is not numeric".format(value))
-
-
-class URL(click.ParamType):
-
-    """
-    Declare a parameter to be a URL as understood by ``urllib``. The URL
-    is requested using the GET method and the connection is closed once
-    the context is closed (the command finishes execution).
-    """
-
-    name = "url"
-
-    def convert(self, value, param, ctx):
-        """
-        Opens the parameter value as a URL using
-        ``urllib.request.urlopen``. A custom User-Agent header is used
-        and a ten-second timeout is set, but otherwise no alterations
-        are made to the defaults (i.e. no authentication, no cookies).
-        Any error causes the command to fail.
-        """
-        try:
-            response = requests.get(value, timeout=10,
-                                    headers={"User-Agent": USER_AGENT})
-            if ctx is not None:
-                ctx.call_on_close(safecall(response.close))
-            response.raise_for_status()
-        except requests.exceptions.ConnectionError:
-            self.fail("Connection error ({})".format(value), param, ctx)
-        except requests.exceptions.Timeout:
-            self.fail("Time out ({})".format(value), param, ctx)
-        except requests.exceptions.TooManyRedirects:
-            self.fail("Too many redirects ({})".format(value), param, ctx)
-        except requests.exceptions.HTTPError:
-            self.fail("HTTP {} {} ({})".format(response.status_code,
-                                               response.reason, value),
-                      param, ctx)
-        except requests.exceptions.RequestException:
-            self.fail("Request error ({})".format(value), param, ctx)
-        return response
-
-
-def open_file_or_url(ctx, param, value):
-    """
-    Click option callback to handle an option that can either be a local
-    file or an HTTP/HTTPS URL.
-    """
-    scheme = urllib.parse.urlparse(value).scheme
-    if scheme in ("http", "https"):
-        return URL().convert(value, param, ctx).text
-    else:
-        return click.File("rb").convert(value, param, ctx).read()
 
 
 @click.command()
@@ -255,7 +159,3 @@ def main(select, null_value, convert_numbers, group_symbol, decimal_symbol,
         if any(row):
             # Only output a row if it has at least one non-empty cell.
             rows.writerow(row)
-
-
-if __name__ == "__main__":
-    main()
