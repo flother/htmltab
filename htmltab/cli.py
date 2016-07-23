@@ -113,6 +113,9 @@ def main(select, null_value, convert_numbers, group_symbol, decimal_symbol,
     # cell value matches one of these it will be output as an empty cell in the
     # CSV.
     null_value = null_value or DEFAULT_NULL_VALUES
+    # If the user didn't specify at least one currency symbol, use the default
+    # set.
+    currency_symbol = currency_symbol or DEFAULT_CURRENCY_SYMBOLS
 
     # Output the CSV to stdout.
     rows = csv.writer(sys.stdout)
@@ -128,7 +131,6 @@ def main(select, null_value, convert_numbers, group_symbol, decimal_symbol,
             if text.lower() in null_value:
                 text = None
             elif convert_numbers:
-                currency_symbol = currency_symbol or DEFAULT_CURRENCY_SYMBOLS
                 try:
                     text = numberise(text, group_symbol, decimal_symbol,
                                      currency_symbol)
