@@ -1,5 +1,14 @@
-Command-line utility to select a table within an HTML document and convert it
-to CSV. Here we can get the historical population of Reykjavík from Wikipedia::
+HTMLTab
+=======
+
+.. image:: https://travis-ci.org/flother/htmltab.svg
+   :target: https://travis-ci.org/flother/htmltab
+.. image:: https://codecov.io/gh/flother/htmltab/branch/master/graph/badge.svg
+   :target: https://codecov.io/gh/flother/htmltab
+
+HTMLTab is a command-line utility to select a table within an HTML document and
+convert it to CSV. Here we can get the historical population of Reykjavík from
+Wikipedia::
 
     $ htmltab --select h2+p+table.wikitable https://en.wikipedia.org/wiki/Reykjavík
     Year,City,Metro
