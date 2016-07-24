@@ -29,4 +29,10 @@ setup(name="htmltab",
           "lxml>=3.2.0",
           "cssselect>=0.9.1",
           "requests>=2.4.0",
-      ])
+      ],
+      tests_require=[
+        "pytest>=2.6.0",
+        "pytest-cov>=2.0.0",
+        "pytest-pep8>=1.0",
+      ],
+      setup_requires=["pytest-runner"])
