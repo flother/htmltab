@@ -1,6 +1,10 @@
+from decimal import Decimal
+
 from httmock import HTTMock, all_requests
+import pytest
 
 from htmltab.cli import main
+from htmltab.utils import numberise
 
 
 @all_requests
@@ -82,3 +86,28 @@ def test_table_rows_allowed(runner, three_csv_table_two):
                                   "tests/fixtures/three.html"])
     assert result.exit_code == 0
     assert result.output == three_csv_table_two
+
+
+def test_numberise():
+    currency_symbols = ("€", "$")
+    with pytest.raises(ValueError):
+        numberise("A", ",", ".", currency_symbols)
+    assert Decimal("1") == numberise("1", ",", ".", currency_symbols)
+    assert Decimal("1.23") == numberise("1.23", ",", ".", currency_symbols)
+    assert Decimal("-50") == numberise("-50", ",", ".", currency_symbols)
+    assert Decimal("-5.432") == numberise("-5.432", ",", ".", currency_symbols)
+
+    assert Decimal("1") == numberise("€1", ",", ".", currency_symbols)
+    assert Decimal("1.23") == numberise("€1.23", ",", ".", currency_symbols)
+    assert Decimal("-1") == numberise("€-1", ",", ".", currency_symbols)
+    assert Decimal("-1.23") == numberise("€-1.23", ",", ".", currency_symbols)
+
+    assert Decimal("-1357.91") == numberise("-1,357.91", ",", ".",
+                                            currency_symbols)
+    assert Decimal("1357.91") == numberise("1,357.91", ",", ".",
+                                           currency_symbols)
+
+    assert Decimal("-1357.91") == numberise("-1.357,91", ".", ",",
+                                            currency_symbols)
+    assert Decimal("1357.91") == numberise("1.357,91", ".", ",",
+                                           currency_symbols)
