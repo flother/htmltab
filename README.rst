@@ -79,9 +79,9 @@ Usage
     -s, --select TEXT               Integer index, CSS selector, or XPath
                                     expression that determines the table to
                                     convert to CSV.
-    -n, --null-value TEXT           Case-insensitive value to convert to an
-                                    empty cell in the CSV output. Use multiple
-                                    times if you have more than one null value.
+    -n, --null-value TEXT           Case-sensitive value to convert to an empty
+                                    cell in the CSV output. Use multiple times
+                                    if you have more than one null value.
                                     [default: 'na', 'n/a', '.', '-']
     -c, --convert-numbers / -k, --keep-numbers
                                     Convert number-like strings into numbers

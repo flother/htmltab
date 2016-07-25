@@ -12,7 +12,7 @@ from lxml.etree import LxmlError
 from .utils import open_file_or_url, parse_html, select_elements, numberise
 
 
-DEFAULT_NULL_VALUES = ("na", "n/a", ".", "-")
+DEFAULT_NULL_VALUES = ("NA", "N/A", ".", "-")
 DEFAULT_CURRENCY_SYMBOLS = ("$", "¥", "£", "€")
 
 
@@ -21,7 +21,7 @@ DEFAULT_CURRENCY_SYMBOLS = ("$", "¥", "£", "€")
               help="Integer index, CSS selector, or XPath expression that "
                    "determines the table to convert to CSV.")
 @click.option("--null-value", "-n", multiple=True,
-              help="Case-insensitive value to convert to an empty cell in the "
+              help="Case-sensitive value to convert to an empty cell in the "
                    "CSV output. Use multiple times if you have more than one "
                    "null value.  [default: '{}']".format("', '".join(
                        DEFAULT_NULL_VALUES)))
@@ -128,7 +128,7 @@ def main(select, null_value, convert_numbers, group_symbol, decimal_symbol,
             # Strip whitespace, convert null values to None, and append all the
             # text within the cell element and its children to the row,
             text = " ".join(cell.text_content().split())
-            if text.lower() in null_value:
+            if text in null_value:
                 text = None
             elif convert_numbers:
                 try:
