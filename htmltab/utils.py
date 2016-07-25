@@ -17,9 +17,9 @@ def open_file_or_url(ctx, param, value):
     """
     scheme = urllib.parse.urlparse(value).scheme
     if scheme in ("http", "https"):
-        return URL().convert(value, param, ctx).text
+        return lambda: URL().convert(value, param, ctx).text
     else:
-        return File("rb").convert(value, param, ctx).read()
+        return lambda: File("rb").convert(value, param, ctx).read()
 
 
 def parse_html(html_file):

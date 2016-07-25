@@ -79,7 +79,7 @@ def main(select, null_value, convert_numbers, group_symbol, decimal_symbol,
 
     # Parse file contents as HTML.
     try:
-        doc = parse_html(html_file)
+        doc = parse_html(html_file())
     except ValueError as err:
         raise click.UsageError(err)
     except (LxmlError, TypeError):
