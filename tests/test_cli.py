@@ -75,3 +75,10 @@ def test_table_rows_required(runner):
     result = runner.invoke(main, ["-s", "thead", "tests/fixtures/three.html"])
     assert result.exit_code != 0
     assert "Error:" in result.output
+
+
+def test_table_rows_allowed(runner, three_csv_table_two):
+    result = runner.invoke(main, ["--select", "#data table tr",
+                                  "tests/fixtures/three.html"])
+    assert result.exit_code == 0
+    assert result.output == three_csv_table_two
