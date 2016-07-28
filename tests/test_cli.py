@@ -88,6 +88,37 @@ def test_table_rows_allowed(runner, three_csv_table_two):
     assert result.output == three_csv_table_two
 
 
+def test_default_null_values(runner):
+    result = runner.invoke(main, ["tests/fixtures/countries.html"])
+    with open("tests/fixtures/countries_default_nulls.csv") as fh:
+        file_contents = fh.read()
+    assert result.exit_code == 0
+    assert result.output == file_contents
+
+
+def test_no_null_values(runner):
+    # Setting "!" as the only null value means the default null values aren't
+    # used and that "!" is the sole acceptable null value in the source table.
+    result = runner.invoke(main, ["--null-value", "!",
+                                  "tests/fixtures/countries.html"])
+    with open("tests/fixtures/countries_no_nulls.csv") as fh:
+        file_contents = fh.read()
+    assert result.exit_code == 0
+    assert result.output == file_contents
+
+
+def test_custom_null_values(runner):
+    with open("tests/fixtures/countries_custom_nulls.csv") as fh:
+        file_contents = fh.read()
+    result = runner.invoke(main, ["--null-value", "0", "--null-value", "na",
+                                  "tests/fixtures/countries.html"])
+    assert result.exit_code == 0
+    assert result.output == file_contents
+    result2 = runner.invoke(main, ["-n", "0", "-n", "na",
+                                   "tests/fixtures/countries.html"])
+    assert result.output == result2.output
+
+
 def test_numberise():
     currency_symbols = ("€", "$")
     with pytest.raises(ValueError):
