@@ -4,5 +4,4 @@ pep8:
   full: true
 pyroma:
   run: true
-vulture:
-  run: true
+
