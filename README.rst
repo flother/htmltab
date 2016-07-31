@@ -5,6 +5,8 @@ HTMLTab
    :target: https://travis-ci.org/flother/htmltab
 .. image:: https://codecov.io/gh/flother/htmltab/branch/master/graph/badge.svg
    :target: https://codecov.io/gh/flother/htmltab
+.. image:: https://landscape.io/github/flother/htmltab/master/landscape.svg?style=flat
+   :target: https://landscape.io/github/flother/htmltab
 
 HTMLTab is a command-line utility to select a table within an HTML document and
 convert it to CSV. Here we can get the historical population of Reykjavík from
