@@ -149,6 +149,13 @@ def test_keep_numbers(runner, three_csv_table_two_keep):
     assert result2.output == three_csv_table_two_keep
 
 
+def test_bad_input(runner):
+    result = runner.invoke(main, input="<")
+    assert result.exit_code != 0
+    result2 = runner.invoke(main, input="<html></html>")
+    assert result2.exit_code != 0
+
+
 def test_numberise():
     currency_symbols = ("€", "$")
     with pytest.raises(ValueError):
