@@ -16,6 +16,11 @@ def basic_response(url, request):
             "content": file_contents}
 
 
+@all_requests
+def response_404(url, request):
+    return {"status_code": 404, "reason": "NOT FOUND"}
+
+
 def test_local_file(runner, basic_csv):
     """
     Test that the correct CSV data is output when using a local HTML5
@@ -154,6 +159,13 @@ def test_bad_input(runner):
     assert result.exit_code != 0
     result2 = runner.invoke(main, input="<html></html>")
     assert result2.exit_code != 0
+
+
+def test_404_response(runner):
+    with HTTMock(response_404):
+        result = runner.invoke(main, ["http://example.org/404.html"])
+    assert result.exit_code != 0
+    assert "HTTP 404 NOT FOUND (http://example.org/404.html)" in result.output
 
 
 def test_numberise():
