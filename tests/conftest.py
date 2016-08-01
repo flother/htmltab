@@ -29,6 +29,13 @@ def three_csv_table_two():
 
 
 @pytest.fixture(scope="session")
+def three_csv_table_two_keep():
+    with open("tests/fixtures/three_table2_keep.csv") as fh:
+        file_contents = fh.read()
+    return file_contents
+
+
+@pytest.fixture(scope="session")
 def three_csv_table_three():
     with open("tests/fixtures/three_table3.csv") as fh:
         file_contents = fh.read()

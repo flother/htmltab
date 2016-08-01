@@ -119,6 +119,36 @@ def test_custom_null_values(runner):
     assert result.output == result2.output
 
 
+def test_convert_numbers(runner, three_csv_table_two):
+    # Test long option name.
+    result = runner.invoke(main, ["-s", "2", "--convert-numbers",
+                                  "tests/fixtures/three.html"])
+    assert result.exit_code == 0
+    assert result.output == three_csv_table_two
+    # Test short option name.
+    result2 = runner.invoke(main, ["-s", "2", "-c",
+                                   "tests/fixtures/three.html"])
+    assert result2.exit_code == 0
+    assert result2.output == three_csv_table_two
+    # Test that --convert-numbers is the default.
+    result3 = runner.invoke(main, ["-s", "2", "tests/fixtures/three.html"])
+    assert result3.exit_code == 0
+    assert result3.output == three_csv_table_two
+
+
+def test_keep_numbers(runner, three_csv_table_two_keep):
+    # Test long option name.
+    result = runner.invoke(main, ["-s", "2", "--keep-numbers",
+                                  "tests/fixtures/three.html"])
+    assert result.exit_code == 0
+    assert result.output == three_csv_table_two_keep
+    # Test short option name.
+    result2 = runner.invoke(main, ["-s", "2", "-k",
+                                   "tests/fixtures/three.html"])
+    assert result2.exit_code == 0
+    assert result2.output == three_csv_table_two_keep
+
+
 def test_numberise():
     currency_symbols = ("€", "$")
     with pytest.raises(ValueError):
