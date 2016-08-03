@@ -168,6 +168,42 @@ def test_404_response(runner):
     assert "HTTP 404 NOT FOUND (http://example.org/404.html)" in result.output
 
 
+def test_group_symbol_and_decimal_mark(runner, basic_european_csv):
+    """
+    Test that the group symbol and decimal mark can be set using both
+    long and short command-line options.
+    """
+    result = runner.invoke(main, ["--group-symbol",
+                                  ".",
+                                  "--decimal-symbol",
+                                  ",",
+                                  "tests/fixtures/basic.html"])
+    assert result.exit_code == 0
+    assert result.output == basic_european_csv
+
+    result2 = runner.invoke(main, ["-g", ".", "-d", ",",
+                                   "tests/fixtures/basic.html"])
+    assert result2.exit_code == 0
+    assert result2.output == result.output
+
+
+def test_currency_symbol(runner, basic_eur_gbp):
+    """
+    Test that custom currency symbols can be set using a long and short
+    command-line option.
+    """
+    result = runner.invoke(main, ["--currency-symbol", "€",
+                                  "--currency-symbol", "£",
+                                  "tests/fixtures/basic.html"])
+    assert result.exit_code == 0
+    assert result.output == basic_eur_gbp
+
+    result2 = runner.invoke(main, ["-u", "€", "-u", "£",
+                                   "tests/fixtures/basic.html"])
+    assert result2.exit_code == 0
+    assert result2.output == result.output
+
+
 def test_numberise():
     currency_symbols = ("€", "$")
     with pytest.raises(ValueError):

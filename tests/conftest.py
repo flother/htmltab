@@ -15,6 +15,20 @@ def basic_csv():
 
 
 @pytest.fixture(scope="session")
+def basic_european_csv():
+    with open("tests/fixtures/basic_european.csv") as fh:
+        file_contents = fh.read()
+    return file_contents
+
+
+@pytest.fixture(scope="session")
+def basic_eur_gbp():
+    with open("tests/fixtures/basic_eur_gbp.csv") as fh:
+        file_contents = fh.read()
+    return file_contents
+
+
+@pytest.fixture(scope="session")
 def three_csv_table_one():
     with open("tests/fixtures/three_table1.csv") as fh:
         file_contents = fh.read()
