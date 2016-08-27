@@ -54,3 +54,10 @@ def three_csv_table_three():
     with open("tests/fixtures/three_table3.csv") as fh:
         file_contents = fh.read()
     return file_contents
+
+
+@pytest.fixture(scope="session")
+def ragged_csv():
+    with open("tests/fixtures/ragged.csv") as fh:
+        file_contents = fh.read()
+    return file_contents

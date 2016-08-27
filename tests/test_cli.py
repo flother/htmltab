@@ -93,6 +93,12 @@ def test_table_rows_allowed(runner, three_csv_table_two):
     assert result.output == three_csv_table_two
 
 
+def test_all_rows_are_same_length(runner, ragged_csv):
+    result = runner.invoke(main, ["tests/fixtures/ragged.html"])
+    assert result.exit_code == 0
+    assert result.output == ragged_csv
+
+
 def test_default_null_values(runner):
     result = runner.invoke(main, ["tests/fixtures/countries.html"])
     with open("tests/fixtures/countries_default_nulls.csv") as fh:

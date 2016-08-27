@@ -117,8 +117,8 @@ def main(select, null_value, convert_numbers, group_symbol, decimal_symbol,
     # set.
     currency_symbol = currency_symbol or DEFAULT_CURRENCY_SYMBOLS
 
-    # Output the CSV to stdout.
-    rows = csv.writer(sys.stdout)
+    rows = []
+    num_columns = 0  # Holds the cell length of the longest row.
     for tr in elements:
         row = []
         # Loop through all th and td elements and output them as cells. Since
@@ -138,5 +138,20 @@ def main(select, null_value, convert_numbers, group_symbol, decimal_symbol,
                     pass  # String not numeric, leave as-is.
             row.append(text)
         if any(row):
-            # Only output a row if it has at least one non-empty cell.
-            rows.writerow(row)
+            if len(row) > num_columns:
+                # This is the row with the largest number of cells so far, so
+                # store the number of columns it contains. This is used when
+                # outputting the CSV to stdout to ensure all rows are the same
+                # length.
+                num_columns = len(row)
+            # Only include a row in the output if it has at least one non-empty
+            # cell.
+            rows.append(row)
+
+    # Output the CSV to stdout.
+    output = csv.writer(sys.stdout)
+    for row in rows:
+        # Extra empty cells are added to the row as required, to ensure that
+        # all rows have the same number of fields (as required by the closest
+        # thing CSV has to a specification, RFC 4180).
+        output.writerow(row + ([""] * (num_columns - len(row))))
