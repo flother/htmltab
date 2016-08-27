@@ -136,7 +136,26 @@ def main(select, null_value, convert_numbers, group_symbol, decimal_symbol,
                                      currency_symbol)
                 except ValueError:
                     pass  # String not numeric, leave as-is.
-            row.append(text)
+            # Parse the colspan attribute. A cell's value is used as an
+            # individual cell in the output row once for every column it's
+            # meant to span. If ``colspan=4`` then the cell's value will be
+            # output four times in the row. Regarding the value of the colspan
+            # attribute, the HTML5 spec is followed here, with only integer
+            # values greater than zero allowed.
+            try:
+                col_span = cell.attrib["colspan"]
+                if col_span.isdigit():
+                    col_span = int(col_span)
+                else:
+                    # Ignore negative values and non-integers, as per HTML5.
+                    raise ValueError("invalid integer {}".format(col_span))
+                # Zero as a value becomes 1, as per HTML5 spec.
+                if col_span == 0:
+                    col_span = 1
+            except (KeyError, TypeError, ValueError):
+                # HTML 5 says (sensibly) that the default value is 1.
+                col_span = 1
+            row += [text] * col_span
         if any(row):
             if len(row) > num_columns:
                 # This is the row with the largest number of cells so far, so
