@@ -7,32 +7,23 @@ HTMLTab
    :target: https://codecov.io/gh/flother/htmltab
 
 HTMLTab is a command-line utility to select a table within an HTML document and
-convert it to CSV. Here we can get the historical population of Reykjavík from
-Wikipedia::
+convert it to CSV. Here we can get the foreign-born population of Edinburgh from Wikipedia::
 
-    $ htmltab --select h2+p+table.wikitable https://en.wikipedia.org/wiki/Reykjavík
-    Year,City,Metro
-    1801,600,
-    1860,1450,
-    1901,6321,8221
-    1910,11449,14534
-    1920,17450,21347
-    1930,28052,33867
-    1940,38308,43483
-    1950,55980,44813
-    1960,72407,88315
-    1970,81693,106152
-    1980,83766,121698
-    1985,89868,
-    1990,97569,145980
-    1995,104258,
-    2000,110852,175000
-    2005,114800,187105
-    2006,115420,191612
-    2007,117721,196161
-    2008,119848,201585
-    2011,119108,202341
-    2015,121822,
+    $ htmltab --select p+table.wikitable.plainrowheaders https://en.wikipedia.org/wiki/Edinburgh
+    Place of birth,Estimated resident population (2011)[117]
+    Poland,11651
+    India,4888
+    Ireland,4743
+    Mainland China [A],4188
+    United States,3700
+    Germany,3500
+    Pakistan,2472
+    Australia,2100
+    France,2000
+    Spain,2000
+    South Africa,1800
+    Canada,1800
+    Hong Kong,1600
 
 * Repository: https://github.com/flother/htmltab
 * Issues: https://github.com/flother/htmltab/issues
