@@ -40,10 +40,12 @@ DEFAULT_CURRENCY_SYMBOLS = ("$", "¥", "£", "€")
                    "strings. Use multiple times if you have more than one "
                    "currency symbol  [default: '{}']".format("', '".join(
                        DEFAULT_CURRENCY_SYMBOLS)))
+@click.option("--output", "-o", type=click.File("w"), default="-",
+              help="Write output to file instead of stdout")
 @click.argument("html_file", callback=open_file_or_url, default="-")
 @click.version_option()
 def main(select, null_value, convert_numbers, group_symbol, decimal_symbol,
-         currency_symbol, html_file):
+         currency_symbol, output, html_file):
     """
     Select a table within an HTML document and convert it to CSV. By
     default stdin will be used as input, but you can also pass a
@@ -66,6 +68,9 @@ def main(select, null_value, convert_numbers, group_symbol, decimal_symbol,
     with id 'bar', while excluding the rows in the header and footer:
 
       htmltab --select "(//div[@id='bar']//table)[2]/tbody/tr" foo.html
+
+    The CSV data will be output to stdout unless the '--output' option
+    is specified.
     """
     # Ensure ``SIGPIPE`` doesn't throw an exception. This prevents the
     # ``[Errno 32] Broken pipe`` error you see when, e.g., piping to ``head``.
@@ -168,7 +173,7 @@ def main(select, null_value, convert_numbers, group_symbol, decimal_symbol,
             rows.append(row)
 
     # Output the CSV to stdout.
-    output = csv.writer(sys.stdout)
+    output = csv.writer(output)
     for row in rows:
         # Extra empty cells are added to the row as required, to ensure that
         # all rows have the same number of fields (as required by the closest
