@@ -28,12 +28,19 @@ Hong Kong,1600
 
 ## Installation
 
+HTMLTab is a Python package, and as such it needs [Python 3] to be installed on your system. Once Python's available you can install HTMLTab using Pip (preferably into a [virtual environment]):
+
 ```sh
-pip3 install -e git+https://github.com/flother/htmltab#egg=htmltab
+pip install -e git+https://github.com/flother/htmltab#egg=htmltab
 ```
 
-HTMLTab requires [Python 3], [Click], [lxml], [cssselect], [Beautiful Soup 4],
-and [requests].
+You can also install it system-wide using [Pipx]:
+
+```sh
+pipx install git+https://github.com/flother/htmltab#egg=htmltab
+```
+
+When installation is complete, you'll have a new `htmltab` command available in your favourite shell.
 
 ## Usage
 
@@ -87,8 +94,5 @@ Options:
 ```
 
 [Python 3]: https://docs.python.org/3/
-[Click]: http://click.pocoo.org/6/
-[lxml]: http://lxml.de
-[cssselect]: https://pythonhosted.org/cssselect/
-[Beautiful Soup 4]: https://www.crummy.com/software/BeautifulSoup/
-[requests]: http://python-requests.org/
+[virtual environment]: https://realpython.com/python-virtual-environments-a-primer/
+[Pipx]: https://pipxproject.github.io/pipx/
