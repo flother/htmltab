@@ -4,7 +4,6 @@ Command-line utility to parse an HTML document, find a particular
 output the CSV to ``stdout``.
 """
 import csv
-import sys
 
 import click
 from lxml.etree import LxmlError
