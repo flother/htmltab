@@ -7,5 +7,5 @@ requests>=2.4.0
 # For testing.
 pytest>=2.6.0
 pytest-cov>=2.0.0
-pytest-pep8>=1.0
+pytest-flake8~=1.0
 httmock>=1.2.3

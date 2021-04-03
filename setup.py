@@ -33,7 +33,7 @@ setup(
     tests_require=[
         "pytest>=2.6.0",
         "pytest-cov>=2.0.0",
-        "pytest-pep8>=1.0",
+        "pytest-flake8~=1.0",
         "httmock>=1.2.3",
     ],
     setup_requires=["pytest-runner"],
