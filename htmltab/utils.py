@@ -30,8 +30,7 @@ def parse_html(html_file):
     Can raise LxmlError or TypeError if the file can't be opened or
     parsed.
     """
-    unicode_html = UnicodeDammit(html_file, smart_quotes_to="html",
-                                 is_html=True)
+    unicode_html = UnicodeDammit(html_file, smart_quotes_to="html", is_html=True)
     if unicode_html.unicode_markup is None:
         raise ValueError("no HTML provided")
     if not unicode_html.unicode_markup:
@@ -61,8 +60,10 @@ def select_elements(doc, select):
                 # Catch the specific LXML error and raise a more generic error
                 # because the problem could lie with any of the index, CSS
                 # selector, or XPath expression.
-                raise ValueError("'{}' not an index, CSS selector, or XPath "
-                                 "expression".format(select))
+                raise ValueError(
+                    "'{}' not an index, CSS selector, or XPath "
+                    "expression".format(select)
+                )
     return elements
 
 

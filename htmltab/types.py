@@ -25,8 +25,9 @@ class URL(ParamType):
         Any error causes the command to fail.
         """
         try:
-            response = requests.get(value, timeout=10,
-                                    headers={"User-Agent": self.USER_AGENT})
+            response = requests.get(
+                value, timeout=10, headers={"User-Agent": self.USER_AGENT}
+            )
             if ctx is not None:
                 ctx.call_on_close(safecall(response.close))
             response.raise_for_status()
@@ -37,9 +38,11 @@ class URL(ParamType):
         except requests.exceptions.TooManyRedirects:
             self.fail("Too many redirects ({})".format(value), param, ctx)
         except requests.exceptions.HTTPError:
-            self.fail("HTTP {} {} ({})".format(response.status_code,
-                                               response.reason, value),
-                      param, ctx)
+            self.fail(
+                "HTTP {} {} ({})".format(response.status_code, response.reason, value),
+                param,
+                ctx,
+            )
         except requests.exceptions.RequestException:
             self.fail("Request error ({})".format(value), param, ctx)
         return response

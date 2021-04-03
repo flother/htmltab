@@ -17,35 +17,72 @@ DEFAULT_CURRENCY_SYMBOLS = ("$", "¥", "£", "€")
 
 
 @click.command()
-@click.option("--select", "-s", default="1",
-              help="Integer index, CSS selector, or XPath expression that "
-                   "determines the table to convert to CSV.")
-@click.option("--null-value", "-n", multiple=True,
-              help="Case-sensitive value to convert to an empty cell in the "
-                   "CSV output. Use multiple times if you have more than one "
-                   "null value.  [default: '{}']".format("', '".join(
-                       DEFAULT_NULL_VALUES)))
-@click.option("--convert-numbers/--keep-numbers", "-c/-k", is_flag=True,
-              default=True, help="Convert number-like strings into numbers "
-                                 "(e.g. remove group symbols, percent signs) "
-                                 "or leave unchanged.  [default: convert]")
-@click.option("--group-symbol", "-g", default=",", show_default=True,
-              help="Symbol used to group digits in numbers (e.g. the ',' in "
-                   "'1,000.00').")
-@click.option("--decimal-symbol", "-d", default=".", show_default=True,
-              help="Symbol used to separate integer from fraction in numbers "
-                   "(e.g. the '.' in '1,000.00').")
-@click.option("--currency-symbol", "-u", multiple=True,
-              help="Currency symbol to remove when converting number-like "
-                   "strings. Use multiple times if you have more than one "
-                   "currency symbol  [default: '{}']".format("', '".join(
-                       DEFAULT_CURRENCY_SYMBOLS)))
-@click.option("--output", "-o", type=click.File("w"), default="-",
-              help="Write output to file instead of stdout")
+@click.option(
+    "--select",
+    "-s",
+    default="1",
+    help="Integer index, CSS selector, or XPath expression that "
+    "determines the table to convert to CSV.",
+)
+@click.option(
+    "--null-value",
+    "-n",
+    multiple=True,
+    help="Case-sensitive value to convert to an empty cell in the "
+    "CSV output. Use multiple times if you have more than one "
+    "null value.  [default: '{}']".format("', '".join(DEFAULT_NULL_VALUES)),
+)
+@click.option(
+    "--convert-numbers/--keep-numbers",
+    "-c/-k",
+    is_flag=True,
+    default=True,
+    help="Convert number-like strings into numbers "
+    "(e.g. remove group symbols, percent signs) "
+    "or leave unchanged.  [default: convert]",
+)
+@click.option(
+    "--group-symbol",
+    "-g",
+    default=",",
+    show_default=True,
+    help="Symbol used to group digits in numbers (e.g. the ',' in " "'1,000.00').",
+)
+@click.option(
+    "--decimal-symbol",
+    "-d",
+    default=".",
+    show_default=True,
+    help="Symbol used to separate integer from fraction in numbers "
+    "(e.g. the '.' in '1,000.00').",
+)
+@click.option(
+    "--currency-symbol",
+    "-u",
+    multiple=True,
+    help="Currency symbol to remove when converting number-like "
+    "strings. Use multiple times if you have more than one "
+    "currency symbol  [default: '{}']".format("', '".join(DEFAULT_CURRENCY_SYMBOLS)),
+)
+@click.option(
+    "--output",
+    "-o",
+    type=click.File("w"),
+    default="-",
+    help="Write output to file instead of stdout",
+)
 @click.argument("html_file", callback=open_file_or_url, default="-")
 @click.version_option()
-def main(select, null_value, convert_numbers, group_symbol, decimal_symbol,
-         currency_symbol, output, html_file):
+def main(
+    select,
+    null_value,
+    convert_numbers,
+    group_symbol,
+    decimal_symbol,
+    currency_symbol,
+    output,
+    html_file,
+):
     """
     Select a table within an HTML document and convert it to CSV. By
     default stdin will be used as input, but you can also pass a
@@ -77,6 +114,7 @@ def main(select, null_value, convert_numbers, group_symbol, decimal_symbol,
     # For details see http://bugs.python.org/issue1652.
     try:
         import signal
+
         signal.signal(signal.SIGPIPE, signal.SIG_DFL)
     except (ImportError, AttributeError):
         # Do nothing on platforms without signals or ``SIGPIPE``.
@@ -108,11 +146,14 @@ def main(select, null_value, convert_numbers, group_symbol, decimal_symbol,
         # row cell, not added as distinct, top-level rows.
         elements = elements[0].xpath("./tr|./thead/tr|./tbody/tr|./tfoot/tr")
     elif len(elements) == 1 and elements[0].tag != "tr":
-        raise click.UsageError("select value matched {} element".format(
-            elements[0].tag))
+        raise click.UsageError(
+            "select value matched {} element".format(elements[0].tag)
+        )
     elif any(el.tag != "tr" for el in elements):
-        raise click.UsageError("select value must match one 'table' element "
-                               "or one or more 'tr' elements")
+        raise click.UsageError(
+            "select value must match one 'table' element "
+            "or one or more 'tr' elements"
+        )
 
     # Use the set of default null values if the user didn't specify any. When a
     # cell value matches one of these it will be output as an empty cell in the
@@ -137,8 +178,9 @@ def main(select, null_value, convert_numbers, group_symbol, decimal_symbol,
                 text = None
             elif convert_numbers:
                 try:
-                    text = numberise(text, group_symbol, decimal_symbol,
-                                     currency_symbol)
+                    text = numberise(
+                        text, group_symbol, decimal_symbol, currency_symbol
+                    )
                 except ValueError:
                     pass  # String not numeric, leave as-is.
             # Parse the colspan attribute. A cell's value is used as an
