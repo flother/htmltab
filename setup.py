@@ -6,7 +6,7 @@ from htmltab import __version__
 setup(
     name="htmltab",
     version=__version__,
-    description="A command-line utility that converts an HTML table into " "CSV data",
+    description="A command-line utility that converts an HTML table into CSV data",
     long_description=open("README.md").read(),
     url="https://github.com/flother/htmltab",
     license="MIT",
