@@ -44,7 +44,8 @@ When installation is complete, you'll have a new `htmltab` command available in 
 
 ## Usage
 
-```text
+```sh
+$ htmltab --help
 Usage: htmltab [OPTIONS] [HTML_FILE]
 
   Select a table within an HTML document and convert it to CSV. By default
@@ -68,27 +69,37 @@ Usage: htmltab [OPTIONS] [HTML_FILE]
 
     htmltab --select "(//div[@id='bar']//table)[2]/tbody/tr" foo.html
 
+  The CSV data will be output to stdout unless the '--output' option is
+  specified.
+
 Options:
   -s, --select TEXT               Integer index, CSS selector, or XPath
                                   expression that determines the table to
                                   convert to CSV.
+
   -n, --null-value TEXT           Case-sensitive value to convert to an empty
                                   cell in the CSV output. Use multiple times
                                   if you have more than one null value.
-                                  [default: 'na', 'n/a', '.', '-']
+                                  [default: 'NA', 'N/A', '.', '-']
+
   -c, --convert-numbers / -k, --keep-numbers
                                   Convert number-like strings into numbers
                                   (e.g. remove group symbols, percent signs)
                                   or leave unchanged.  [default: convert]
+
   -g, --group-symbol TEXT         Symbol used to group digits in numbers (e.g.
                                   the ',' in '1,000.00').  [default: ,]
+
   -d, --decimal-symbol TEXT       Symbol used to separate integer from
                                   fraction in numbers (e.g. the '.' in
                                   '1,000.00').  [default: .]
+
   -u, --currency-symbol TEXT      Currency symbol to remove when converting
                                   number-like strings. Use multiple times if
                                   you have more than one currency symbol
                                   [default: '$', '¥', '£', '€']
+
+  -o, --output FILENAME           Write output to file instead of stdout
   --version                       Show the version and exit.
   --help                          Show this message and exit.
 ```
