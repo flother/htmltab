@@ -44,8 +44,7 @@ When installation is complete, you'll have a new `htmltab` command available in 
 
 ## Usage
 
-```sh
-$ htmltab --help
+```text
 Usage: htmltab [OPTIONS] [HTML_FILE]
 
   Select a table within an HTML document and convert it to CSV. By default
