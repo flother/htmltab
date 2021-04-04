@@ -1,12 +1,10 @@
 from click.types import ParamType
 from click.utils import safecall
-
 import requests
 import requests.exceptions
 
 
 class URL(ParamType):
-
     """
     Declare a parameter to be a URL as understood by ``urllib``. The URL
     is requested using the GET method and the connection is closed once
