@@ -3,7 +3,7 @@ from setuptools import find_packages, setup
 
 setup(
     name="htmltab",
-    version="0.1.0-pre",
+    use_scm_version=True,
     description="A command-line utility that converts an HTML table into CSV data",
     long_description=open("README.md").read(),
     url="https://github.com/flother/htmltab",
@@ -35,5 +35,5 @@ setup(
         "pytest-flake8~=1.0",
         "httmock>=1.4",
     ],
-    setup_requires=["pytest-runner"],
+    setup_requires=["setuptools_scm", "pytest-runner"],
 )
