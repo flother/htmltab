@@ -8,7 +8,7 @@ import csv
 import click
 from lxml.etree import LxmlError
 
-from .utils import open_file_or_url, parse_html, select_elements, numberise
+from .utils import numberise, open_file_or_url, parse_html, select_elements
 
 
 DEFAULT_NULL_VALUES = ("NA", "N/A", ".", "-")
