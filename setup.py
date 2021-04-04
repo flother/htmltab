@@ -1,11 +1,9 @@
-from setuptools import setup
-
-from htmltab import __version__
+from setuptools import find_packages, setup
 
 
 setup(
     name="htmltab",
-    version=__version__,
+    version="0.1.0-pre",
     description="A command-line utility that converts an HTML table into CSV data",
     long_description=open("README.md").read(),
     url="https://github.com/flother/htmltab",
@@ -19,7 +17,8 @@ setup(
         "Programming Language :: Python :: 3",
         "Topic :: Utilities",
     ],
-    packages=["htmltab"],
+    packages=find_packages("src"),
+    package_dir={"": "src"},
     entry_points={
         "console_scripts": ["htmltab=htmltab.cli:main"],
     },
