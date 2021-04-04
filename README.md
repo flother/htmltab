@@ -1,6 +1,6 @@
 # HTMLTab
 
-[![Results from latest push build](https://travis-ci.org/flother/htmltab.svg)](https://travis-ci.org/flother/htmltab)
+[![Results from latest push build](https://github.com/flother/htmltab/actions/workflows/run_tests.yml/badge.svg)](https://github.com/flother/htmltab/actions)
 [![Code coverage report](https://codecov.io/gh/flother/htmltab/branch/master/graph/badge.svg)](https://codecov.io/gh/flother/htmltab)
 
 HTMLTab is a command-line utility to select a table within an HTML document and convert it to CSV. Here we can get the foreign-born population of Edinburgh from Wikipedia:

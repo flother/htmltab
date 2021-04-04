@@ -1,0 +1,20 @@
+name: Python unit tests
+on: [push, pull_request]
+jobs:
+  run-tests:
+    runs-on: "ubuntu-20.04"
+    steps:
+      - uses: actions/checkout@v2
+      - name: "Set up Python 3.9"
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - name: Install dependencies
+        run: pip install -e .
+      - name: Run tests with Pytest
+        run: python setup.py test
+      - name: Upload coverage report to codecov
+        if: ${{ success() }}
+        run: |
+          pip install codecov
+          codecov
