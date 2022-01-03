@@ -37,7 +37,7 @@ pip install -e git+https://github.com/flother/htmltab#egg=htmltab
 You can also install it system-wide using [Pipx]:
 
 ```sh
-pipx install git+https://github.com/flother/htmltab#egg=htmltab
+pipx install git+https://github.com/flother/htmltab
 ```
 
 When installation is complete, you'll have a new `htmltab` command available in your favourite shell.
