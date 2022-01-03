@@ -31,7 +31,7 @@ Hong Kong,1600
 HTMLTab is a Python package, and as such it needs [Python 3] to be installed on your system. Once Python's available you can install HTMLTab using Pip (preferably into a [virtual environment]):
 
 ```sh
-pip install -e git+https://github.com/flother/htmltab#egg=htmltab
+pip install git+https://github.com/flother/htmltab#egg=htmltab
 ```
 
 You can also install it system-wide using [Pipx]:
