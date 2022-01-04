@@ -83,6 +83,8 @@ def main(
     html_file,
 ):
     """
+    <https://flother.github.io/htmltab>
+
     Select a table within an HTML document and convert it to CSV. By
     default stdin will be used as input, but you can also pass a
     filename or a URL.

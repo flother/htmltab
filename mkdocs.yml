@@ -1,0 +1,27 @@
+site_name: HTMLTab
+site_description: Command-line utility to scrape HTML tables and convert them into CSV files
+repo_url: https://github.com/flother/htmltab
+nav:
+  - Overview: index.md
+  - Usage: usage.md
+  - changelog.md
+markdown_extensions:
+  - smarty
+  - admonition
+theme:
+  name: material
+  icon:
+    logo: material/table
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: green
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: light green
+  locale: en_GB
+  font: false
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/flother/htmltab
