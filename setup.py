@@ -30,7 +30,7 @@ setup(
         "requests ~= 2.27",
     ],
     tests_require=[
-        "pytest ~= 6.2",
+        "pytest >= 6.2,< 8.0",
         "pytest-cov ~= 3.0",
         "pytest-flake8 ~= 1.0",
         "httmock ~= 1.4",
