@@ -30,9 +30,9 @@ setup(
         "requests ~= 2.27",
     ],
     tests_require=[
-        "pytest ~= 6.2",
+        "pytest ~= 7.1",
         "pytest-cov ~= 3.0",
-        "pytest-flake8 ~= 1.0",
+        "pytest-flake8 ~= 1.1",
         "httmock ~= 1.4",
     ],
     setup_requires=["setuptools_scm", "pytest-runner"],
