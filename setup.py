@@ -31,7 +31,7 @@ setup(
     ],
     tests_require=[
         "pytest ~= 7.1",
-        "pytest-cov ~= 3.0",
+        "pytest-cov >= 3,< 5",
         "pytest-flake8 ~= 1.1",
         "httmock ~= 1.4",
     ],
