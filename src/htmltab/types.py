@@ -30,17 +30,17 @@ class URL(ParamType):
                 ctx.call_on_close(safecall(response.close))
             response.raise_for_status()
         except requests.exceptions.ConnectionError:
-            self.fail("Connection error ({})".format(value), param, ctx)
+            self.fail(f"Connection error ({value})", param, ctx)
         except requests.exceptions.Timeout:
-            self.fail("Time out ({})".format(value), param, ctx)
+            self.fail(f"Time out ({value})", param, ctx)
         except requests.exceptions.TooManyRedirects:
-            self.fail("Too many redirects ({})".format(value), param, ctx)
+            self.fail(f"Too many redirects ({value})", param, ctx)
         except requests.exceptions.HTTPError:
             self.fail(
-                "HTTP {} {} ({})".format(response.status_code, response.reason, value),
+                f"HTTP {response.status_code} {response.reason} ({value})",
                 param,
                 ctx,
             )
         except requests.exceptions.RequestException:
-            self.fail("Request error ({})".format(value), param, ctx)
+            self.fail(f"Request error ({value})", param, ctx)
         return response

@@ -147,9 +147,7 @@ def main(
         # row cell, not added as distinct, top-level rows.
         elements = elements[0].xpath("./tr|./thead/tr|./tbody/tr|./tfoot/tr")
     elif len(elements) == 1 and elements[0].tag != "tr":
-        raise click.UsageError(
-            "select value matched {} element".format(elements[0].tag)
-        )
+        raise click.UsageError(f"select value matched {elements[0].tag} element")
     elif any(el.tag != "tr" for el in elements):
         raise click.UsageError(
             "select value must match one 'table' element "
@@ -196,7 +194,7 @@ def main(
                     col_span = int(col_span)
                 else:
                     # Ignore negative values and non-integers, as per HTML5.
-                    raise ValueError("invalid integer {}".format(col_span))
+                    raise ValueError(f"invalid integer {col_span}")
                 # Zero as a value becomes 1, as per HTML5 spec.
                 if col_span == 0:
                     col_span = 1

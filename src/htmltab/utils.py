@@ -46,7 +46,7 @@ def select_elements(doc, select):
     """
     try:
         int(select)
-        elements = doc.xpath("(//table)[{}]".format(int(select)))
+        elements = doc.xpath(f"(//table)[{int(select)}]")
     except ValueError:
         # Expression wasn't a valid integer so try to use it as a CSS selector.
         try:
@@ -61,9 +61,7 @@ def select_elements(doc, select):
                 # because the problem could lie with any of the index, CSS
                 # selector, or XPath expression.
                 raise ValueError(
-                    "'{}' not an index, CSS selector, or XPath expression".format(
-                        select
-                    )
+                    f"'{select}' not an index, CSS selector, or XPath expression"
                 )
     return elements
 
@@ -106,4 +104,4 @@ def numberise(value, group_symbol, decimal_symbol, currency_symbols):
     try:
         return Decimal(number) * sign
     except InvalidOperation:
-        raise ValueError("{} is not numeric".format(value))
+        raise ValueError(f"{value} is not numeric")
