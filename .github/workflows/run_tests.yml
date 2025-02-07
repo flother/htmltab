@@ -12,7 +12,7 @@ jobs:
       - name: Install dependencies
         run: pip install -e .
       - name: Run tests with Pytest
-        run: python setup.py test
+        run: python setup.py pytest
       - name: Upload coverage report to codecov
         if: ${{ success() }}
         run: |
