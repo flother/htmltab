@@ -4,6 +4,7 @@ Command-line utility to parse an HTML document, find a particular
 output the CSV to ``stdout``.
 """
 
+import contextlib
 import csv
 
 import click
@@ -176,12 +177,11 @@ def main(
             if text in null_value:
                 text = None
             elif convert_numbers:
-                try:
+                with contextlib.suppress(ValueError):
+                    # ValueError means the string isn't numeric, so leave it as-is.
                     text = numberise(
                         text, group_symbol, decimal_symbol, currency_symbol
                     )
-                except ValueError:
-                    pass  # String not numeric, leave as-is.
             # Parse the colspan attribute. A cell's value is used as an
             # individual cell in the output row once for every column it's
             # meant to span. If ``colspan=4`` then the cell's value will be
