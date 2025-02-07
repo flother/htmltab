@@ -1,7 +1,7 @@
 from decimal import Decimal
 
-from httmock import HTTMock, all_requests
 import pytest
+from httmock import HTTMock, all_requests
 
 from htmltab.cli import main
 from htmltab.utils import numberise

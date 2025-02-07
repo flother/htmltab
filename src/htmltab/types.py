@@ -1,7 +1,7 @@
-from click.types import ParamType
-from click.utils import safecall
 import requests
 import requests.exceptions
+from click.types import ParamType
+from click.utils import safecall
 
 
 class URL(ParamType):

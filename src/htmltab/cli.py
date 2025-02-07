@@ -3,13 +3,13 @@ Command-line utility to parse an HTML document, find a particular
 ``table`` element within the document, convert the table to CSV, and
 output the CSV to ``stdout``.
 """
+
 import csv
 
 import click
 from lxml.etree import LxmlError
 
 from .utils import numberise, open_file_or_url, parse_html, select_elements
-
 
 DEFAULT_NULL_VALUES = ("NA", "N/A", ".", "-")
 DEFAULT_CURRENCY_SYMBOLS = ("$", "¥", "£", "€")

@@ -1,11 +1,11 @@
-from decimal import Decimal, InvalidOperation
 import urllib.parse
+from decimal import Decimal, InvalidOperation
 
+import lxml.html
 from bs4 import UnicodeDammit
 from click.types import File
 from lxml.cssselect import SelectorError
 from lxml.etree import LxmlError
-import lxml.html
 
 from .types import URL
 
@@ -61,8 +61,9 @@ def select_elements(doc, select):
                 # because the problem could lie with any of the index, CSS
                 # selector, or XPath expression.
                 raise ValueError(
-                    "'{}' not an index, CSS selector, or XPath "
-                    "expression".format(select)
+                    "'{}' not an index, CSS selector, or XPath expression".format(
+                        select
+                    )
                 )
     return elements
 
