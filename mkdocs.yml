@@ -4,6 +4,7 @@ repo_url: https://github.com/flother/htmltab
 nav:
   - Overview: index.md
   - Usage: usage.md
+  - contributing.md
   - changelog.md
 markdown_extensions:
   - smarty

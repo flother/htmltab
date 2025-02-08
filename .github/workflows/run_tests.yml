@@ -5,16 +5,19 @@ jobs:
     runs-on: "ubuntu-20.04"
     steps:
       - uses: actions/checkout@v3
-      - name: "Set up Python 3.9"
+      - name: "Set up Python 3.10"
         uses: actions/setup-python@v3
         with:
-          python-version: 3.9
+          python-version: "3.10"
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
       - name: Install dependencies
-        run: pip install -e .
+        run: uv sync
       - name: Run tests with Pytest
-        run: python setup.py pytest
+        run: uv run --frozen pytest
       - name: Upload coverage report to codecov
         if: ${{ success() }}
         run: |
-          pip install codecov
-          codecov
+          uvx codecov

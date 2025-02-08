@@ -1,3 +1,42 @@
+[project]
+name = "htmltab"
+version = "0.3.0-dev"
+description = "A command-line utility that converts an HTML table into CSV data"
+readme = "README.md"
+license = { file = "LICENCE" }
+requires-python = ">=3.10"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Programming Language :: Python :: 3",
+    "Topic :: Utilities",
+]
+dependencies = [
+    "beautifulsoup4 ~= 4.10",
+    "click ~= 8.0",
+    "lxml ~= 4.7",
+    "cssselect ~= 1.1",
+    "requests ~= 2.27",
+]
+
+[dependency-groups]
+"dev" = ["pytest ~= 7.1", "pytest-cov ~= 3.0", "httmock ~= 1.4"]
+
+[project.urls]
+Documentation = "https://flother.github.io/htmltab/"
+Repository = "https://github.com/flother/htmltab"
+Changelog = "https://flother.github.io/htmltab/changelog/"
+
+[project.scripts]
+htmltab = "htmltab.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
 [tool.ruff.format]
 docstring-code-format = true
 
@@ -6,3 +45,4 @@ select = ["E4", "E7", "E9", "F", "I"]
 
 [tool.pytest.ini_options]
 addopts = ["--cov", "htmltab"]
+testpaths = ["tests"]

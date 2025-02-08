@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.3.0 (unreleased)
+
+- Switch to using [uv](https://github.com/astral-sh/uv) for project management
+
 ## Version 0.2.0 (3 Jan 2022)
 
 - Fix Pipx installation (see [issue #6](https://github.com/flother/htmltab/issues/6))
