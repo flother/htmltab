@@ -15,15 +15,15 @@ classifiers = [
     "Topic :: Utilities",
 ]
 dependencies = [
-    "beautifulsoup4 ~= 4.10",
-    "click ~= 8.0",
-    "lxml ~= 4.7",
-    "cssselect ~= 1.1",
-    "requests ~= 2.27",
+    "beautifulsoup4 ~= 4.13",
+    "click ~= 8.1.0",
+    "lxml ~= 5.3",
+    "cssselect ~= 1.2",
+    "requests ~= 2.32",
 ]
 
 [dependency-groups]
-"dev" = ["pytest ~= 7.1", "pytest-cov ~= 3.0", "httmock ~= 1.4"]
+"dev" = ["pytest ~= 8.3", "pytest-cov ~= 6.0", "httmock ~= 1.4"]
 
 [project.urls]
 Documentation = "https://flother.github.io/htmltab/"
