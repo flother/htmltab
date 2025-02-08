@@ -46,7 +46,7 @@ DEFAULT_CURRENCY_SYMBOLS = ("$", "¥", "£", "€")
     "-g",
     default=",",
     show_default=True,
-    help="Symbol used to group digits in numbers (e.g. the ',' in " "'1,000.00').",
+    help="Symbol used to group digits in numbers (e.g. the ',' in '1,000.00').",
 )
 @click.option(
     "--decimal-symbol",
@@ -151,8 +151,7 @@ def main(
         raise click.UsageError(f"select value matched {elements[0].tag} element")
     elif any(el.tag != "tr" for el in elements):
         raise click.UsageError(
-            "select value must match one 'table' element "
-            "or one or more 'tr' elements"
+            "select value must match one 'table' element or one or more 'tr' elements"
         )
 
     # Use the set of default null values if the user didn't specify any. When a
