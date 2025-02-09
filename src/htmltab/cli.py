@@ -7,7 +7,7 @@ output the CSV to ``stdout``.
 import contextlib
 import csv
 from decimal import Decimal
-from typing import IO, Any, Callable, TypeAlias
+from typing import IO, Any, Callable
 
 import click
 from lxml.etree import LxmlError
@@ -17,8 +17,8 @@ from .utils import numberise, open_file_or_url, parse_html, select_elements
 DEFAULT_NULL_VALUES = ["NA", "N/A", ".", "-"]
 DEFAULT_CURRENCY_SYMBOLS = ["$", "¥", "£", "€"]
 
-Cell: TypeAlias = None | Decimal | str
-Row: TypeAlias = list[Cell]
+type Cell = None | Decimal | str
+type Row = list[Cell]
 
 
 @click.command()

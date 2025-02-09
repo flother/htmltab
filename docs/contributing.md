@@ -20,7 +20,7 @@ git clone git@github.com:YOURNAME/htmltab
 Now you can use uv to create a virtual environment:
 
 ```term
-uv venv --python 3.10
+uv venv --python 3.12
 ```
 
 And then install the project's dependencies:

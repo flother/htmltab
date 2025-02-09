@@ -11,7 +11,7 @@ With HTMLTab you can:
 - Define what counts as a null value
 - Save the CSV data to a file
 
-HTMLTab is written in Python. To use it you'll need Python version 3.6 or higher installed on your system. Visit [InstallPython3.com](https://installpython3.com/) for a step-by-step guide for your operating system.
+HTMLTab is written in Python. To use it you'll need Python version 3.12 or higher installed on your system. Visit Real Python for a [step-by-step guide for installing Python](https://realpython.com/installing-python/) on your operating system.
 
 ## Installation
 
