@@ -195,6 +195,10 @@ By default, `NA`, `N/A`, `.`, and `-` are considered null values. These are not 
 
 The short form of this option is `-n`.
 
+### `--delimiter`
+
+Let's you choose the character used to separate fields in the CSV output. By default a comma (`,`) is used as the delimiter. If you want to use a tab as a delimiter, pass `--delimiter $'\t'` (Bash and Zsh) or `--delimiter (printf '\t')` (Fish).
+
 ### `--version`
 
 Show the version of HTMLTab you have installed, and exit.
