@@ -3,6 +3,7 @@
 ## Version 0.3.0 (unreleased)
 
 - Switch to using [uv](https://github.com/astral-sh/uv) for project management
+- Add `--delimiter` command-line option. Use it to choose the character that separates CSV fields in the output
 
 ## Version 0.2.0 (3 Jan 2022)
 
