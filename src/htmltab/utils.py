@@ -1,16 +1,17 @@
 import urllib.parse
 from decimal import Decimal, InvalidOperation
+from typing import Any
 
 import lxml.html
-from bs4 import UnicodeDammit
-from click.types import File
+from bs4.dammit import UnicodeDammit
+from click import Context, File, Parameter
 from lxml.cssselect import SelectorError
 from lxml.etree import LxmlError
 
 from .types import URL
 
 
-def open_file_or_url(ctx, param, value):
+def open_file_or_url(ctx: Context, param: Parameter, value: Any):
     """
     Click option callback to handle an option that can either be a local
     file or an HTTP/HTTPS URL.
@@ -22,7 +23,7 @@ def open_file_or_url(ctx, param, value):
         return lambda: File("rb").convert(value, param, ctx).read()
 
 
-def parse_html(html_file):
+def parse_html(html_file: str):
     """
     Read the HTML file using lxml's HTML parser, but convert to Unicode
     using Beautiful Soup's UnicodeDammit class.
@@ -31,14 +32,12 @@ def parse_html(html_file):
     parsed.
     """
     unicode_html = UnicodeDammit(html_file, smart_quotes_to="html", is_html=True)
-    if unicode_html.unicode_markup is None:
-        raise ValueError("no HTML provided")
     if not unicode_html.unicode_markup:
         raise ValueError("could not detect character encoding")
     return lxml.html.fromstring(unicode_html.unicode_markup)
 
 
-def select_elements(doc, select):
+def select_elements(doc: lxml.html.HtmlElement, select: str):
     """
     Return the elements within ``doc`` that match the selector
     ``select``. The selector can be an index, a CSS selector, or an
@@ -66,7 +65,9 @@ def select_elements(doc, select):
     return elements
 
 
-def numberise(value, group_symbol, decimal_symbol, currency_symbols):
+def numberise(
+    value: str, group_symbol: str, decimal_symbol: str, currency_symbols: list[str]
+):
     """
     Convert a string to a :class:`decimal.Decimal` object, if the string
     is number-like.

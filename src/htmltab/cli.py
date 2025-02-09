@@ -6,14 +6,19 @@ output the CSV to ``stdout``.
 
 import contextlib
 import csv
+from decimal import Decimal
+from typing import IO, Any, Callable, TypeAlias
 
 import click
 from lxml.etree import LxmlError
 
 from .utils import numberise, open_file_or_url, parse_html, select_elements
 
-DEFAULT_NULL_VALUES = ("NA", "N/A", ".", "-")
-DEFAULT_CURRENCY_SYMBOLS = ("$", "¥", "£", "€")
+DEFAULT_NULL_VALUES = ["NA", "N/A", ".", "-"]
+DEFAULT_CURRENCY_SYMBOLS = ["$", "¥", "£", "€"]
+
+Cell: TypeAlias = None | Decimal | str
+Row: TypeAlias = list[Cell]
 
 
 @click.command()
@@ -74,14 +79,14 @@ DEFAULT_CURRENCY_SYMBOLS = ("$", "¥", "£", "€")
 @click.argument("html_file", callback=open_file_or_url, default="-")
 @click.version_option()
 def main(
-    select,
-    null_value,
-    convert_numbers,
-    group_symbol,
-    decimal_symbol,
-    currency_symbol,
-    output,
-    html_file,
+    select: str,
+    null_value: list[str],
+    convert_numbers: bool,
+    group_symbol: str,
+    decimal_symbol: str,
+    currency_symbol: list[str],
+    output: IO[Any],
+    html_file: Callable[[], str],
 ):
     """
     <https://flother.github.io/htmltab>
@@ -126,7 +131,7 @@ def main(
     try:
         doc = parse_html(html_file())
     except ValueError as err:
-        raise click.UsageError(err)
+        raise click.UsageError(str(err))
     except (LxmlError, TypeError):
         raise click.UsageError("could not parse HTML")
 
@@ -134,7 +139,7 @@ def main(
     try:
         elements = select_elements(doc, select)
     except ValueError as err:
-        raise click.BadParameter(err)
+        raise click.BadParameter(str(err))
 
     # Acceptable inputs are a single table element, or a collection of one or
     # more tr elements. Anything else is considered bad input.
@@ -162,24 +167,25 @@ def main(
     # set.
     currency_symbol = currency_symbol or DEFAULT_CURRENCY_SYMBOLS
 
-    rows = []
+    rows: list[Row] = []
     num_columns = 0  # Holds the cell length of the longest row.
     for tr in elements:
-        row = []
+        row: Row = []
+        cell: Cell = None
         # Loop through all th and td elements and output them as cells. Since
         # CSV doesn't have any concept of headers or data cells we don't need
         # to treat them differently.
-        for cell in tr.xpath("./th|./td"):
+        for cell_element in tr.xpath("./th|./td"):
             # Strip whitespace, convert null values to None, and append all the
             # text within the cell element and its children to the row,
-            text = " ".join(cell.text_content().split())
-            if text in null_value:
-                text = None
+            cell = " ".join(cell_element.text_content().split())
+            if cell in null_value:
+                cell = None
             elif convert_numbers:
                 with contextlib.suppress(ValueError):
                     # ValueError means the string isn't numeric, so leave it as-is.
-                    text = numberise(
-                        text, group_symbol, decimal_symbol, currency_symbol
+                    cell = numberise(
+                        cell, group_symbol, decimal_symbol, currency_symbol
                     )
             # Parse the colspan attribute. A cell's value is used as an
             # individual cell in the output row once for every column it's
@@ -188,7 +194,7 @@ def main(
             # attribute, the HTML5 spec is followed here, with only integer
             # values greater than zero allowed.
             try:
-                col_span = cell.attrib["colspan"]
+                col_span = cell_element.attrib["colspan"]
                 if col_span.isdigit():
                     col_span = int(col_span)
                 else:
@@ -200,7 +206,7 @@ def main(
             except (KeyError, TypeError, ValueError):
                 # HTML 5 says (sensibly) that the default value is 1.
                 col_span = 1
-            row += [text] * col_span
+            row += [cell] * col_span
         if any(row):
             if len(row) > num_columns:
                 # This is the row with the largest number of cells so far, so
@@ -213,9 +219,9 @@ def main(
             rows.append(row)
 
     # Output the CSV to stdout.
-    output = csv.writer(output)
+    out = csv.writer(output)
     for row in rows:
         # Extra empty cells are added to the row as required, to ensure that
         # all rows have the same number of fields (as required by the closest
         # thing CSV has to a specification, RFC 4180).
-        output.writerow(row + ([""] * (num_columns - len(row))))
+        out.writerow(row + ([""] * (num_columns - len(row))))
