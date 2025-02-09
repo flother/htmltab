@@ -160,6 +160,18 @@ def test_keep_numbers(runner, three_csv_table_two_keep):
     assert result2.output == three_csv_table_two_keep
 
 
+def test_delimiter(runner, basic_tsv):
+    result = runner.invoke(main, ["-e", "	", "tests/fixtures/basic.html"])
+    assert result.exit_code == 0
+    assert result.output == basic_tsv
+
+
+def test_delimiter_must_be_single_character(runner):
+    result = runner.invoke(main, ["-e", "foo", "tests/fixtures/basic.html"])
+    assert result.exit_code != 0
+    assert "Error: delimiter must be a single character" in result.output
+
+
 def test_bad_input(runner):
     result = runner.invoke(main, input="<")
     assert result.exit_code != 0

@@ -70,6 +70,14 @@ type Row = list[Cell]
     "currency symbol  [default: '{}']".format("', '".join(DEFAULT_CURRENCY_SYMBOLS)),
 )
 @click.option(
+    "--delimiter",
+    "-e",
+    type=str,
+    default=",",
+    show_default=True,
+    help="Character used to separate fields in the CSV output",
+)
+@click.option(
     "--output",
     "-o",
     type=click.File("w"),
@@ -85,6 +93,7 @@ def main(
     group_symbol: str,
     decimal_symbol: str,
     currency_symbol: list[str],
+    delimiter: str,
     output: IO[Any],
     html_file: Callable[[], str],
 ):
@@ -126,6 +135,11 @@ def main(
     except (ImportError, AttributeError):
         # Do nothing on platforms without signals or ``SIGPIPE``.
         pass
+
+    # Check the CSV delimiter is a single character before requesting and
+    # parsing the HTML.
+    if len(delimiter) != 1:
+        raise click.UsageError("delimiter must be a single character")
 
     # Parse file contents as HTML.
     try:
@@ -219,7 +233,7 @@ def main(
             rows.append(row)
 
     # Output the CSV to stdout.
-    out = csv.writer(output)
+    out = csv.writer(output, delimiter=delimiter)
     for row in rows:
         # Extra empty cells are added to the row as required, to ensure that
         # all rows have the same number of fields (as required by the closest

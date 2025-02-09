@@ -15,6 +15,13 @@ def basic_csv():
 
 
 @pytest.fixture(scope="session")
+def basic_tsv():
+    with open("tests/fixtures/basic.tsv") as fh:
+        file_contents = fh.read()
+    return file_contents
+
+
+@pytest.fixture(scope="session")
 def basic_european_csv():
     with open("tests/fixtures/basic_european.csv") as fh:
         file_contents = fh.read()
