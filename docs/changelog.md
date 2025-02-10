@@ -3,7 +3,9 @@
 ## Version 0.3.0 (unreleased)
 
 - Switch to using [uv](https://github.com/astral-sh/uv) for project management
+- Bump minimum required version of Python to 3.12 (released Oct 2023)
 - Add `--delimiter` command-line option. Use it to choose the character that separates CSV fields in the output
+- Add type annotations
 
 ## Version 0.2.0 (3 Jan 2022)
 
