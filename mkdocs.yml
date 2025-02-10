@@ -22,6 +22,8 @@ theme:
       primary: light green
   locale: en_GB
   font: false
+  features:
+    - navigation.footer
 extra:
   social:
     - icon: fontawesome/brands/github
