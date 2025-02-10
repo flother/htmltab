@@ -13,4 +13,4 @@ jobs:
         with:
           enable-cache: true
           python-version: "3.12"
-      - run: uvx --with mkdocs-material mkdocs gh-deploy --force
+      - run: uvx --with mkdocs-material==9 mkdocs@1.6 gh-deploy --force
