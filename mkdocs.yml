@@ -19,7 +19,7 @@ theme:
       primary: green
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
-      primary: light green
+      primary: green
   locale: en_GB
   font: false
   features:
