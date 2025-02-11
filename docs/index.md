@@ -31,7 +31,7 @@ pip install git+https://github.com/flother/htmltab#egg=htmltab
 
 Once installation is complete the `htmltab` command will be available while the virtual environment is active.
 
-To find out how to use the `htmltab` command, see [Usage](usage.md).
+To find out how to use the `htmltab` command, see the [CLI reference](usage.md).
 
 ## Quick start
 

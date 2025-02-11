@@ -1,4 +1,4 @@
-# Command-line usage
+# CLI reference
 
 The basic form to invoke HTMLTab from the command-line is:
 
