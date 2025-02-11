@@ -40,3 +40,15 @@ Now you're ready to start developing! You can run HTMLTab, and any changes you m
 ```
 htmltab --help
 ```
+
+## Serving the documentation locally
+
+HTMLTab's documentation --- the documentation you're reading now --- can be found in the repo's `docs` sub-directory. It's written in Markdown and converted to HTML using [MkDocs](https://www.mkdocs.org/). You can run the MkDocs server locally with [uv](https://docs.astral.sh/uv/):
+
+``` sh
+uvx --with mkdocs-material==9 mkdocs@1.6 serve
+```
+
+You can then view the documentation in your browser at <http://localhost:8000/>. Any changes you make to the docs will be reflected in your browser.
+
+When changes are committed to the `master` branch, a GitHub Actions workflow ([`.github/workflows/publish_docs.yml`](https://github.com/flother/htmltab/blob/master/.github/workflows/publish_docs.yml)) will publish the latest docs to <https://flother.github.io/htmltab>.
