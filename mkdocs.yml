@@ -23,6 +23,7 @@ theme:
   locale: en_GB
   font: false
   features:
+    - content.code.copy
     - navigation.footer
 extra:
   social:
