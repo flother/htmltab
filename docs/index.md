@@ -95,3 +95,9 @@ goals=544
 
 !!! tip
     Because The Guardian's page contains live league data, your results will probably differ from the data above.
+
+## What next?
+
+- [See more examples](examples/filter-rows.md)
+- [Read the CLI reference](usage.md)
+- [Set up a development environment](contributing.md)
