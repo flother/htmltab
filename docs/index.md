@@ -5,7 +5,7 @@ HTMLTab is a command-line utility that parses an HTML document (from a URL or a 
 With HTMLTab you can:
 
 - Convert an HTML table into CSV data in a single command
-- Pick which table within the to convert using a CSS selector, XPath expression, or integer index
+- Pick which table within the HTML to convert using a CSS selector, XPath expression, or integer index
 - Remove percent signs and currency symbols from numbers
 - Convert number-like strings into integer or float values (e.g. convert `1.000.000,00` to `1000000.00`)
 - Define what counts as a null value
