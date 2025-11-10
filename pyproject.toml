@@ -24,7 +24,7 @@ dependencies = [
 
 [dependency-groups]
 "dev" = [
-    "pytest ~= 8.3",
+    "pytest ~= 9.0",
     "pytest-cov ~= 7.0",
     "httmock ~= 1.4",
     "types-lxml>=2025.3.30",
