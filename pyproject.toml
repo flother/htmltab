@@ -18,7 +18,7 @@ dependencies = [
     "beautifulsoup4 ~= 4.13",
     "click ~= 8.3.0",
     "lxml ~= 6.0",
-    "cssselect ~= 1.2",
+    "cssselect ~= 1.4",
     "requests ~= 2.32",
 ]
 
