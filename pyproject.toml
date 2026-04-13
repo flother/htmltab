@@ -15,7 +15,7 @@ classifiers = [
     "Topic :: Utilities",
 ]
 dependencies = [
-    "beautifulsoup4 ~= 4.13",
+    "beautifulsoup4 ~= 4.14",
     "click ~= 8.3.0",
     "lxml ~= 6.0",
     "cssselect ~= 1.2",
