@@ -1,6 +1,8 @@
 from decimal import Decimal
+from unittest import mock
 
 import pytest
+import requests.exceptions
 from httmock import HTTMock, all_requests
 
 from htmltab.cli import main
@@ -245,3 +247,14 @@ def test_numberise():
 
     assert Decimal("-1357.91") == numberise("-1.357,91", ".", ",", currency_symbols)
     assert Decimal("1357.91") == numberise("1.357,91", ".", ",", currency_symbols)
+
+
+def test_unreachable_url_is_usage_error(runner):
+    with mock.patch(
+        "htmltab.types.requests.get",
+        side_effect=requests.exceptions.ConnectionError("refused"),
+    ):
+        result = runner.invoke(main, ["http://127.0.0.1:9/"])
+    assert result.exit_code != 0
+    assert isinstance(result.exception, SystemExit)
+    assert "Connection error" in result.output
