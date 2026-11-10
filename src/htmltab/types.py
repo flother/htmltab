@@ -25,9 +25,16 @@ class URL(ParamType):
         are made to the defaults (i.e. no authentication, no cookies).
         Any error causes the command to fail.
         """
-        response = requests.get(
-            value, timeout=10, headers={"User-Agent": self.USER_AGENT}
-        )
+        try:
+            response = requests.get(
+                value, timeout=10, headers={"User-Agent": self.USER_AGENT}
+            )
+        except requests.exceptions.ConnectionError:
+            self.fail(f"Connection error ({value})", param, ctx)
+        except requests.exceptions.Timeout:
+            self.fail(f"Time out ({value})", param, ctx)
+        except requests.exceptions.RequestException:
+            self.fail(f"Request error ({value})", param, ctx)
         try:
             if ctx is not None:
                 ctx.call_on_close(safecall(response.close))
